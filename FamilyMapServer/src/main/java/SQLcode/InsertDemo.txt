@@ -1,0 +1,57 @@
+INSERT INTO persons VALUES
+(
+    'francois_id',
+    'fmahieu',
+    'francois',
+    'mahieu',
+    'm',
+    'laurent_id',
+    'anita_id',
+    'alisa_id'
+);
+
+INSERT INTO persons VALUES
+(
+    'alisa_id',
+    'alisak',
+    'alisa',
+    'knowles',
+    'f',
+    'bryan_id',
+    'ayako_id',
+    'francois_id'
+);
+
+INSERT INTO users VALUES
+(
+    'fmahieu',
+    'francois_id',
+    'francoisID',
+    'francois@fms.com',
+    'francois',
+    'mahieu',
+    'm'
+);
+
+INSERT INTO users VALUES
+(
+    'alisak',
+    'alisa_id',
+    'alisaID',
+    'alisa@fms.com',
+    'alisa',
+    'knowles',
+    'f'
+);
+
+
+INSERT INTO user_person VALUES(
+
+    'alisak',
+    'alisa_id'
+);
+INSERT INTO user_person VALUES(
+
+    'fmahieu',
+    'francois_id'
+);

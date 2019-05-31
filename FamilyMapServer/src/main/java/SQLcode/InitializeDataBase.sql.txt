@@ -1,0 +1,45 @@
+CREATE TABLE persons
+(
+    person_id   TEXT  NOT NULL    PRIMARY KEY,
+    user_name   TEXT    NOT NULL,
+    first_name  TEXT    NOT NULL,
+    last_name   TEXT    NOT NULL,
+    gender      CHAR(1)  NOT NULL,
+    father_id   TEXT,
+    mother_id   TEXT,
+    spouse_id   TEXT
+
+);
+
+CREATE TABLE users
+(
+    user_name   TEXT   NOT NULL    PRIMARY KEY,
+    password    TEXT    NOT NULL,
+    email       TEXT    NOT NULL,
+    first_name  TEXT   NOT NULL,
+    last_name   TEXT   NOT NULL,
+    gender  CHAR(1)  NOT NULL,
+    person_id   TEXT    NOT NULL,
+
+);
+
+CREATE TABLE events
+(
+    event_id    TEXT    NOT NULL    PRIMARY KEY,
+    user_name    TEXT    NOT NULL,
+    person_id    TEXT    NOT NULL,
+    latitude    TEXT    NOT NULL,
+    longitude    REAL    NOT NULL,
+    country    REAL    NOT NULL,
+    city    TEXT    NOT NULL,
+    event_type    TEXT    NOT NULL,
+    year    INT NOT NULL
+    
+);
+
+CREATE TABLE authtokens
+(
+    token   TEXT    NOT NULL    PRIMARY KEY,
+    user_name   TEXT    NOT NULL
+    
+);
