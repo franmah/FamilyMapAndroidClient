@@ -1,4 +1,4 @@
-package com.fmahieu.models;
+package com.client.models;
 
 import java.util.Objects;
 import java.util.UUID;

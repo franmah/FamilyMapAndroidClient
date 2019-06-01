@@ -5,7 +5,6 @@ import dao.DataBaseException;
 import dao.OperationDAO;
 import dao.UserDAO;
 import response.ConnectionResponse;
-import response.ErrorResponse;
 import response.Response;
 import request.LoginRequest;
 import models.User;
@@ -32,7 +31,7 @@ public class LoginService{
 
         if(user_name == null || password == null){
             System.out.println(LocalTime.now() + " LoginService: Fail -> username or password NULL.");
-            return new ErrorResponse("Need a username and a password");
+            return new ConnectionResponse("Need a username and a password");
         }
 
         boolean commit = false;
@@ -49,7 +48,7 @@ public class LoginService{
             if(token == null){
                 commit = false;
                 System.out.println(LocalTime.now() + " LoginService: token came back null, password/username error");
-                return  new ErrorResponse("Wrong Username and/or Password.");
+                return  new ConnectionResponse("Wrong Username and/or Password.");
             }
             else{
                 commit = true;
@@ -61,12 +60,12 @@ public class LoginService{
         }
         catch (DataBaseException message){
             commit = false;
-            return new ErrorResponse(message.toString());
+            return new ConnectionResponse(message.toString());
         }
         catch (Exception e){
             System.out.println(LocalTime.now() + " LoginService: Error: " + e.toString());
             commit = false;
-            return new ErrorResponse("Internal error: something went wrong while trying to connect user.");
+            return new ConnectionResponse("Internal error: something went wrong while trying to connect user.");
         }
         finally{
             if(db != null){

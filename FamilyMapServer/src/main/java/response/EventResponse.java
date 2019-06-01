@@ -6,7 +6,7 @@ import models.Event;
  * Response used by EventService class.
  * Return the info for a single event.
  */
-public class EventResponse extends Response{
+public class EventResponse implements Response{
 
 
 
@@ -19,8 +19,13 @@ public class EventResponse extends Response{
     private String city = null;
     private String type = null;
     private int year = 0;
+    private String error_message = null;
 
     public EventResponse(){}
+
+    public EventResponse(String error_message){
+        this.error_message = error_message;
+    }
 
     public EventResponse(String event_id, String user_name, String person_id, float latitude,
                          float longitude, String country, String city, String type, int year) {

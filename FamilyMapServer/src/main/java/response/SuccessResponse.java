@@ -3,7 +3,7 @@ package response;
 /**
  * Response used by Services that only need a to display a message in case of success.
  */
-public class SuccessResponse extends Response{
+public class SuccessResponse implements Response{
     
     private String message = null;
     

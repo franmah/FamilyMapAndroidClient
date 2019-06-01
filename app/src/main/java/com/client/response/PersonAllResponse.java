@@ -1,8 +1,8 @@
-package response;
+package com.client.response;
 
 import java.util.List;
 
-import models.Person;
+import com.client.models.Person;
 
 /**
  * Response used by PersonAllService class.
@@ -10,24 +10,24 @@ import models.Person;
  * People can be added using an array and calling the constructor
  * or can be passed one by one using the addPerson method.
  */
-public class PersonAllResponse implements Response{
+public class PersonAllResponse {
     
     private List<Person> people = null;
     private String error_message = null;
     
     public PersonAllResponse(){}
-
-    public PersonAllResponse(String error_message){
-        this.error_message = error_message;
-    }
     
     public PersonAllResponse(List<Person> people){
         this.people = people;
+    }
+
+    public PersonAllResponse(String error_message){
+        this.error_message = error_message;
     }
 
     public List<Person> getPeople() {
         return people;
     }
 
-    public String getErrorMessage(){ return error_message; }
+    public String getErrorMessage() { return error_message; }
 }

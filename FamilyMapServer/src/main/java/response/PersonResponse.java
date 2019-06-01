@@ -1,12 +1,10 @@
 package response;
 
-import models.Person;
-
 /**
  * Response used by PersonService class.
  * Contains the information of the requested person.
  */
-public class PersonResponse extends Response{
+public class PersonResponse implements Response{
     
     private String user_name = null;
     private String person_id = null;
@@ -16,8 +14,13 @@ public class PersonResponse extends Response{
     private String father_id = null;
     private String mother_id = null;
     private String spouse_id = null;
+    private String error_message = null;
     
     public PersonResponse(){}
+
+    public PersonResponse(String error_message){
+        this.error_message = error_message;
+    }
 
     public PersonResponse(String user_name, String person_id, String first_name, String last_name,
                           String gender, String father_id, String mother_id, String spouse_id) {

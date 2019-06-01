@@ -6,7 +6,7 @@ import dao.OperationDAO;
 import dao.PersonDAO;
 import dao.UserDAO;
 import request.LoginRequest;
-import response.ErrorResponse;
+import response.ConnectionResponse;
 import response.Response;
 import response.ConnectionResponse;
 import request.RegisterRequest;
@@ -29,7 +29,7 @@ public class RegisterService{
      *
      * @param req   RegisterRequest containing the user info
      * @return      Return a connexionResponse with the user id, name and token
-     *              or errorResponse if there is a missing field or if the username is already taken
+     *              or ConnectionResponse if there is a missing field or if the username is already taken
      */
     public Response registerNewUser(RegisterRequest req){
         System.out.println(req.toString());
@@ -37,14 +37,14 @@ public class RegisterService{
         if(req.getUser_name() == null || req.getPassword() == null || req.getFirst_name() == null ||
                 req.getLast_name() == null || req.getEmail() == null || req.getGender() == null){
             System.out.println(LocalTime.now() + " RegisterService.registerNewUser(): Error: One of the parameter is null");
-            return new ErrorResponse("Error: one of the parameter is missing");
+            return new ConnectionResponse("Error: one of the parameter is missing");
         }
 
         String gender_choice = "fm";
         String gender = req.getGender().toLowerCase();
         if(gender.length() != 1 || !gender_choice.contains(gender)){
             System.out.println(LocalTime.now() + " RegisterService.registerNewUser(): Error: gender input wrong.");
-            return new ErrorResponse("Error: enter \"f\" or \"m\" for gender");
+            return new ConnectionResponse("Error: enter \"f\" or \"m\" for gender");
         }
 
         boolean commit = false;
@@ -57,7 +57,7 @@ public class RegisterService{
             if(udao.getUser(req.getUser_name()) != null){
                 System.out.println(LocalTime.now() + " RegisterService: username is already used");
                 commit = false;
-                return new ErrorResponse("The username is already used!");
+                return new ConnectionResponse("The username is already used!");
             }
 
             User new_user = generatePersonAndUser(req);
@@ -69,7 +69,7 @@ public class RegisterService{
             if(token == null){
                 System.out.println(LocalTime.now() + " RegisterService: Error: token came back null");
                 commit = false;
-                return  new ErrorResponse("Internal Error: something went wrong while connecting the user, user not registered");
+                return  new ConnectionResponse("Internal Error: something went wrong while connecting the user, user not registered");
             }
 
             commit = true;
@@ -82,7 +82,7 @@ public class RegisterService{
             FillService fill_service = new FillService();
             Response response = fill_service.fillUserTree(req.getUser_name(), NUM_GENERATION);
 
-            if(response instanceof ErrorResponse){
+            if(response instanceof ConnectionResponse){
                 return response; // If FillService didn't work properly
             }
 
@@ -91,11 +91,11 @@ public class RegisterService{
         }
         catch (DataBaseException message){
             commit = false;
-            return new ErrorResponse(message.toString());
+            return new ConnectionResponse(message.toString());
         }
         catch (Exception e){
             commit = false;
-            return new ErrorResponse("Internal error: unable to register user.");
+            return new ConnectionResponse("Internal error: unable to register user.");
         }
         finally {
             if(db != null){

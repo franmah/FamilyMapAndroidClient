@@ -1,4 +1,4 @@
-package com.fmahieu.models;
+package com.client.models;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -59,9 +59,18 @@ public class Event{
     public String getEventType(){return eventType;}
     public int getYear(){return year;}
 
-
     @Override
-    public int hashCode() {
-        return Objects.hash(eventID, associatedUsername, personID, getLatitude(), getLongitude(), getCountry(), getCity(), getEventType(), getYear());
+    public String toString() {
+        return "Event{" +
+                "eventID='" + eventID + '\'' +
+                ", associatedUsername='" + associatedUsername + '\'' +
+                ", personID='" + personID + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", country='" + country + '\'' +
+                ", city='" + city + '\'' +
+                ", eventType='" + eventType + '\'' +
+                ", year=" + year +
+                '}';
     }
 }

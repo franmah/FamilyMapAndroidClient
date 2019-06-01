@@ -1,8 +1,8 @@
-package response;
+package com.client.response;
 
 import java.util.List;
 
-import models.Event;
+import com.client.models.Event;
 
 /**
  * Response used by EventAllService class.
@@ -10,7 +10,7 @@ import models.Event;
  * Events can be added using an array and calling the constructor
  * or can be passed one by one using the add Event method.
  */
-public class EventAllResponse implements Response{
+public class EventAllResponse {
     
     private List<Event> events = null;
     private String error_message = null;
@@ -28,4 +28,6 @@ public class EventAllResponse implements Response{
     public List<Event> getEvents() {
         return events;
     }
+
+    public String getErrorMessage() { return error_message; }
 }

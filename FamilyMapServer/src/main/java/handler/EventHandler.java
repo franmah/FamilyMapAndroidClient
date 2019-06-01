@@ -25,7 +25,6 @@ public class EventHandler implements HttpHandler{
 
         try{
             if(exchange.getRequestMethod().toLowerCase().equals("get")){
-
                 boolean getSingleEvent = false;
                 String event_id = null;
 
