@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">FamilyMap</string>
+
+    <string name="male_connection_button">Male</string>
+    <string name="female_connection_button">Female</string>
+    <string name="host_connection_text">Server Host:</string>
+    <string name="port_connection_text">Server Port:</string>
+    <string name="username_connection_text">User Name:</string>
+    <string name="password_connection_text">Password:</string>
+    <string name="first_name_connection_text">First Name:</string>
+    <string name="last_name_connection_text">Last Name:</string>
+    <string name="email_connection_text">Email:</string>
+    <string name="gender_connection_text">Gender:</string>
+    <string name="sign_connection_button">SIGN IN</string>
+    <string name="register_connection_button">REGISTER</string>
+    <string name="incorrect_info_login_toast">Need server host, server port, user name, and password.</string>
+    <string name="incorrect_info_register_toast">Every field must be filled.</string>
 </resources>

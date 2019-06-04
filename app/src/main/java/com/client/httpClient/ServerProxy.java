@@ -1,5 +1,7 @@
 package com.client.httpClient;
 
+import android.util.Log;
+
 import com.client.request.LoginRequest;
 import com.client.request.RegisterRequest;
 import com.client.response.ConnectionResponse;
@@ -13,6 +15,8 @@ import java.net.URL;
 import java.time.LocalTime;
 
 public class ServerProxy {
+
+    private final String TAG = "ServerProxy";
 
     private String hostName = null;
     private String portNumber = null;
@@ -68,9 +72,11 @@ public class ServerProxy {
         assert portNumber != null;
 
         System.out.println("ServerProxy.login(): sending request to server...");
+        Log.i(TAG, "in Login");
 
         try{
             URL url = new URL("http://" + hostName + ":" + portNumber + "/user/login");
+            System.out.println("ServerProxy: url: " + url);
             HttpURLConnection http = (HttpURLConnection)url.openConnection();
             http.setRequestMethod("POST");
             http.setDoOutput(true);
@@ -82,6 +88,8 @@ public class ServerProxy {
 
             OutputStream reqBody = http.getOutputStream();
             writeToStream(json_request, reqBody);
+
+                Log.i(TAG, "sending login request to the server...");
             reqBody.close();
 
             if(http.getResponseCode() == HttpURLConnection.HTTP_OK){
@@ -89,17 +97,20 @@ public class ServerProxy {
                 InputStream respBody = http.getInputStream();
                 String response_json = readFromStream(respBody);
 
+                    Log.i(TAG, "login response came back HTTP_OK");
                 return gson.fromJson(response_json, ConnectionResponse.class);
             }
             else {
-                System.out.println("ServerProxy.login(): Error during registration: " +
+                    System.out.println("ServerProxy.login(): Error during registration: " +
                         http.getResponseMessage());
+                    Log.e(TAG, "login response came back wrong: " + http.getResponseMessage());
                 return new ConnectionResponse("Internal Error: unable to connect to server");
             }
         }
         catch (Exception e){
-            System.out.println("ServerProxy.login(): something went wrong while registering user: " + e.toString());
-            e.printStackTrace();
+                System.out.println("ServerProxy.login(): something went wrong while registering user: " + e.toString());
+                e.printStackTrace();
+                Log.e(TAG, "login response came back wrong: " + e.toString(), e);
             return new ConnectionResponse("Internal Error: unable to connect to server");
         }
     }

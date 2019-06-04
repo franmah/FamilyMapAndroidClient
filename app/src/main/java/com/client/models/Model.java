@@ -34,59 +34,33 @@ public class Model {
     private Set<Person> maleAncestors;
     private Set<Person> femaleAncestors;
 
-    public Map<String, Person> getPeople() {
-        return people;
-    }
+    private String userToken = null;
+    private String userPersonId = null;
 
-    public void setPeople(Map<String, Person> people) {
-        this.people = people;
-    }
+    public Map<String, Person> getPeople() { return people; }
+    public void setPeople(Map<String, Person> people) { this.people = people; }
 
-    public Map<String, Event> getEvents() {
-        return events;
-    }
+    public Map<String, Event> getEvents() { return events; }
+    public void setEvents(Map<String, Event> events) { this.events = events; }
 
-    public void setEvents(Map<String, Event> events) {
-        this.events = events;
-    }
+    public Map<String, List<Event>> getPersonEvents() { return personEvents; }
+    public void setPersonEvents(Map<String, List<Event>> personEvents) { this.personEvents = personEvents; }
 
-    public Map<String, List<Event>> getPersonEvents() {
-        return personEvents;
-    }
+    public Set<String> getEventTypes() { return eventTypes; }
+    public void setEventTypes(Set<String> eventTypes) { this.eventTypes = eventTypes; }
 
-    public void setPersonEvents(Map<String, List<Event>> personEvents) {
-        this.personEvents = personEvents;
-    }
+    public Person getUserPerson() { return userPerson; }
+    public void setUserPerson(Person user) { this.userPerson = user; }
 
-    public Set<String> getEventTypes() {
-        return eventTypes;
-    }
+    public Set<Person> getMaleAncestors() { return maleAncestors; }
+    public void setMaleAncestors(Set<Person> maleAncestors) { this.maleAncestors = maleAncestors; }
 
-    public void setEventTypes(Set<String> eventTypes) {
-        this.eventTypes = eventTypes;
-    }
+    public Set<Person> getFemaleAncestors() { return femaleAncestors; }
+    public void setFemaleAncestors(Set<Person> femaleAncestors) { this.femaleAncestors = femaleAncestors; }
 
-    public Person getUser() {
-        return userPerson;
-    }
+    public String getUserToken() { return userToken; }
+    public void setUserToken(String userToken) { this.userToken = userToken; }
 
-    public void setUserPerson(Person user) {
-        this.userPerson = user;
-    }
-
-    public Set<Person> getMaleAncestors() {
-        return maleAncestors;
-    }
-
-    public void setMaleAncestors(Set<Person> maleAncestors) {
-        this.maleAncestors = maleAncestors;
-    }
-
-    public Set<Person> getFemaleAncestors() {
-        return femaleAncestors;
-    }
-
-    public void setFemaleAncestors(Set<Person> femaleAncestors) {
-        this.femaleAncestors = femaleAncestors;
-    }
+    public String getUserPersonId() { return userPersonId; }
+    public void setUserPersonId(String userPersonId) { this.userPersonId = userPersonId; }
 }
