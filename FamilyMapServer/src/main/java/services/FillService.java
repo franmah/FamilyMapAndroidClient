@@ -210,7 +210,7 @@ public class FillService{
             db.getPerson_dao().updatePersonParents(user_person);
 
             commit = true;
-
+            System.out.println(LocalTime.now() + " FillService.fillUserTree(): family tree has been generated");
             return new SuccessResponse("Successfully generated " + num_person + " people and " + num_events + " event(s)");
         }
         catch (DataBaseException message){
@@ -239,11 +239,11 @@ public class FillService{
      */
     private Person generateTree(Person child, String user_name, int num_generations, int current_generation) throws DataBaseException{
         if(current_generation > num_generations){
-            System.out.println(LocalTime.now() + " FillService.generateTree(): returning");
+            //System.out.println(LocalTime.now() + " FillService.generateTree(): returning");
             return null;
         }
 
-        System.out.println(LocalTime.now() + " FillService.generateTree(): generating generation #" + current_generation + "/" + num_generations);
+        //System.out.println(LocalTime.now() + " FillService.generateTree(): generating generation #" + current_generation + "/" + num_generations);
 
         try {
             PersonDAO person_dao = db.getPerson_dao();
@@ -251,39 +251,39 @@ public class FillService{
             // Generate mother ( + birth + random event)
             Person mother = generatePerson(user_name, "f");
             num_person++;
-            System.out.println(LocalTime.now() + " FillService.generateTree(): Person generated: " + mother.toString());
+            //System.out.println(LocalTime.now() + " FillService.generateTree(): Person generated: " + mother.toString());
 
             generateBirth(child, mother.getPersonId(), user_name);
             num_events++;
-            System.out.println(LocalTime.now() + " FillService.generateTree(): birth successfully generated for the mother");
+            //System.out.println(LocalTime.now() + " FillService.generateTree(): birth successfully generated for the mother");
 
             generateRandomEvent(mother.getPersonId(), user_name);
             num_events++;
-            System.out.println(LocalTime.now() + " FillService.generateTree(): Random event successfully generated for the mother");
+            //System.out.println(LocalTime.now() + " FillService.generateTree(): Random event successfully generated for the mother");
 
             // recursive call
             generateTree(mother, user_name, num_generations, ++current_generation);
 
-            System.out.println(LocalTime.now() + " FillService.generateTree(): generating generation #" + current_generation + "/" + num_generations);
+            //System.out.println(LocalTime.now() + " FillService.generateTree(): generating generation #" + current_generation + "/" + num_generations);
 
             // Generate the dad (birth + random event)
             Person father = generatePerson(user_name, "m");
             num_person++;
-            System.out.println(LocalTime.now() + " FillService.generateTree(): Person generated: " + father.toString());
+            //System.out.println(LocalTime.now() + " FillService.generateTree(): Person generated: " + father.toString());
 
             generateBirth(child, father.getPersonId(), user_name);
             num_events++;
-            System.out.println(LocalTime.now() + " FillService.generateTree(): birth successfully generated for the father");
+            //System.out.println(LocalTime.now() + " FillService.generateTree(): birth successfully generated for the father");
 
 
             generateRandomEvent(father.getPersonId(), user_name);
             num_events++;
-            System.out.println(LocalTime.now() + " FillService.generateTree(): Random event successfully generated for the father");
+            //System.out.println(LocalTime.now() + " FillService.generateTree(): Random event successfully generated for the father");
 
 
             // Generate marriage event for father and mother
             generateMarriage(mother, father);
-            System.out.println(LocalTime.now() + " FillService.generateTree(): successfully generated marriage events");
+            //System.out.println(LocalTime.now() + " FillService.generateTree(): successfully generated marriage events");
             num_events += 2;
 
             mother.setSpouseId(father.getPersonId());
@@ -300,7 +300,7 @@ public class FillService{
             child.setMotherId(mother.getPersonId());
             child.setFatherId(father.getPersonId());
 
-            System.out.println(LocalTime.now() + " FillService.generateTree(): returning");
+            //System.out.println(LocalTime.now() + " FillService.generateTree(): returning");
             return child;
         }
         catch (DataBaseException message){

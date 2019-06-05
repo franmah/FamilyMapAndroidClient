@@ -22,7 +22,7 @@ public class EventHandler implements HttpHandler{
         boolean success = false;
 
         System.out.println(LocalTime.now() + " EventHandler: context \"/event...\" called ");
-
+        System.out.println("method of exchanve: " + exchange.getRequestMethod());
         try{
             if(exchange.getRequestMethod().toLowerCase().equals("get")){
                 boolean getSingleEvent = false;
@@ -69,6 +69,9 @@ public class EventHandler implements HttpHandler{
 
                 success = true;
                 System.out.println(LocalTime.now() + " EventHandler: response successfully sent!");
+            }
+            else{
+                System.out.println(LocalTime.now() + " EventHandler: wrong request method should be of type \"get\"");
             }
 
             if(!success){

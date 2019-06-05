@@ -5,8 +5,10 @@ import com.client.models.*;
 import com.client.response.EventAllResponse;
 import com.client.response.PersonAllResponse;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -19,17 +21,18 @@ public class DataRetriever {
      *
      * @param hostName
      * @param portNumber
-     * @param token
-     * @param userPersonId
      * @return null if no error, else: return the error message received from the server
      */
-    public String pullData(String hostName, String portNumber, String token, String userPersonId){
+    public String pullData(String hostName, String portNumber){
 
         try{
             proxy = new ServerProxy(hostName, portNumber);
             model = Model.getInstance();
+            String token = model.getUserToken();
+            String userPersonId = model.getUserPersonId();
 
             // Retrieve events
+            System.out.println("DataRetriever.pullData(): sending request for events...");
             String message = getEvents(token);
             // check if there was an error:
             if(message != null){
@@ -37,6 +40,7 @@ public class DataRetriever {
             }
 
             // Retrieve People
+            System.out.println("DataRetriever.pullData(): sending request for people...");
             message = getPeople(token, userPersonId);
             if(message != null){
                 return message;
@@ -55,9 +59,11 @@ public class DataRetriever {
         EventAllResponse response = proxy.getEvents(token);
 
         if(response.getErrorMessage() != null){
+            System.out.println("DataRetriever.getEvents(): events response came back with an error");
             return response.getErrorMessage();
         }
 
+        System.out.println("DataRetriever.getEvents(): events response came back with array of events");
         Map<String, Event> result = new TreeMap<>();
         Set<String> eventTypes = new TreeSet<>();
 
@@ -79,8 +85,8 @@ public class DataRetriever {
         }
 
         Map<String, Person> result = new TreeMap<>();
-        Set<Person> maleAncestors = new TreeSet<>();
-        Set<Person> femaleAncestors = new TreeSet<>();
+        Set<Person> maleAncestors = new HashSet<>();
+        Set<Person> femaleAncestors = new HashSet<>();
 
         for(Person person : response.getPeople()){
             result.put(person.getPersonId(), person);

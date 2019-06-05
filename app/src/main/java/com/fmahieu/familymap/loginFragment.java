@@ -18,7 +18,9 @@ import android.widget.Toast;
 import com.client.httpClient.ServerProxy;
 import com.client.models.Model;
 import com.client.request.LoginRequest;
+import com.client.request.RegisterRequest;
 import com.client.response.ConnectionResponse;
+import com.client.service.DataRetriever;
 
 public class loginFragment extends Fragment {
 
@@ -35,14 +37,6 @@ public class loginFragment extends Fragment {
     private RadioButton mFemaleButton;
     private Button mSignInButton;
     private Button mRegisterButton;
-
-    private boolean hostNameFilled = false;
-    private boolean portNumberFilled = false;
-    private boolean userNameFilled = false;
-    private boolean passwordFilled = false;
-    private boolean firstNameFilled = false;
-    private boolean lastNameFilled =false;
-    private boolean emailFilled = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,8 +65,9 @@ public class loginFragment extends Fragment {
             @Override
             public void onClick(View v){
                 if(isLoginTextFilled()){
-                        Log.i(TAG, "Login button pressed, moving to http proxy...");
+                    Log.i(TAG, "Login button pressed, moving to http proxy...");
                     new LoginUser().execute();
+
                 }
                 else{
                     Toast.makeText(getContext(), R.string.incorrect_info_login_toast, Toast.LENGTH_SHORT).show();
@@ -85,7 +80,7 @@ public class loginFragment extends Fragment {
             public void onClick(View v){
                 if(isRegisterTextFilled()){
                     Log.i(TAG, "Register button pressed, moving to http proxy...");
-                    // Register the user
+                    new RegisterUser().execute();
                 }
                 else{
                     Toast.makeText(getContext(), R.string.incorrect_info_register_toast, Toast.LENGTH_SHORT).show();
@@ -96,26 +91,106 @@ public class loginFragment extends Fragment {
         return view;
     }
 
-    private class LoginUser extends AsyncTask<Void, Void, Void>{
+    public void test(){
+        new RetrieveData().execute();
+    }
+
+    private class LoginUser extends AsyncTask<Void, Void, ConnectionResponse>{
         @Override
-        protected Void doInBackground(Void... params){
+        protected ConnectionResponse doInBackground(Void... params){
             Log.i(TAG, "in LoginUser, starting login request...");
-            Toast.makeText(getContext(), "TEST8080", Toast.LENGTH_SHORT).show();
             ServerProxy proxy = new ServerProxy(mHostNameText.getText().toString(), mPortNumberText.getText().toString());
             ConnectionResponse response = proxy.login(new LoginRequest(mUserNameText.getText().toString(), mPasswordText.getText().toString()));
+
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(ConnectionResponse response){
 
             if(response.getErrorMessage() == null){
                 Model model = Model.getInstance();
                 model.setUserToken(response.getToken());
                 model.setUserPersonId(response.getPersonID());
+
+                Log.i(TAG, "RegisterAsync.onPostExecute : Starting retrieveData aSyncTask");
+                //new RetrieveData().execute();
+                test();
+
             }
             else{
                 Log.e(TAG,response.getErrorMessage());
-                Toast.makeText(getContext(), response.getErrorMessage(), Toast.LENGTH_SHORT).show();
+                makeToast(response.getErrorMessage());
+            }
+        }
+    }
+
+    private class RegisterUser extends AsyncTask<Void, Void, ConnectionResponse>{
+        @Override
+        protected ConnectionResponse doInBackground(Void... params){
+            Log.i(TAG, "in RegisterUser, starting register request...");
+            ServerProxy proxy = new ServerProxy(mHostNameText.getText().toString(), mPortNumberText.getText().toString());
+
+            String gender = "m";
+            if(mFemaleButton.isChecked()){
+                gender = "f";
             }
 
-            return null;
+            ConnectionResponse response = proxy.register(new RegisterRequest(mUserNameText.getText().toString(),
+                    mPasswordText.getText().toString(), mEmailText.getText().toString(), mFirstNameText.getText().toString(),
+                    mLastNameText.getText().toString(), gender));
+
+            return response;
         }
+
+        @Override
+        protected void onPostExecute(ConnectionResponse response){
+
+            if(response.getErrorMessage() == null){
+                Model model = Model.getInstance();
+                model.setUserToken(response.getToken());
+                model.setUserPersonId(response.getPersonID());
+
+                Log.i(TAG, "RegisterAsync.onPostExecute : Starting retrieveData aSyncTask");
+                new RetrieveData().execute();
+
+            }
+            else{
+                Log.e(TAG,response.getErrorMessage());
+                makeToast(response.getErrorMessage());
+            }
+        }
+    }
+
+    private class RetrieveData extends AsyncTask<Void, Void, String>{
+        @Override
+        protected String doInBackground(Void... params){
+            Log.i(TAG, "in RetrieveData, starting data request...");
+            DataRetriever dataRetriever = new DataRetriever();
+            String response = dataRetriever.pullData(mHostNameText.getText().toString(), mPortNumberText.getText().toString());
+
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(String response){
+            if(response != null){
+                Log.i(TAG, "in RetrieveData, response from DataRetriever came back not null, an error occurred.");
+                makeToast(response);
+            }
+            else {
+                Log.i(TAG, "in RetrieveData, response from DataRetriever came back null, data has been successfully loaded");
+
+                // TEST:
+                Model model = Model.getInstance();
+                makeToast("Connected: " + model.getUserPerson().getFirstName() + " " + model.getUserPerson().getLastName());
+                Log.i("TESTING", "THIS IS A TEST: " + model.getPeople().toString());
+            }
+        }
+    }
+
+    private void makeToast(String message){
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     private boolean isLoginTextFilled(){

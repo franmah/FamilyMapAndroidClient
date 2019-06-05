@@ -69,4 +69,11 @@ public class Person{
 
         return final_string.toString();
     }
+
+
+    @Override
+    public int hashCode() {
+        return  personID.length() & getAssociatedUsername().length() ^ getFirstName().length() &
+                getLastName().length() ^ getGender().length();
+    }
 }

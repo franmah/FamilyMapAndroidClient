@@ -1,6 +1,9 @@
 package com.client.service;
 
+import android.view.Display;
+
 import com.client.httpClient.ServerProxy;
+import com.client.models.Model;
 import com.client.request.RegisterRequest;
 import com.client.response.ConnectionResponse;
 
@@ -25,8 +28,12 @@ public class DataRetrieverTest {
             if(response.getErrorMessage() == null){
                 proxy = null;
 
+                Model model = Model.getInstance();
+                model.setUserPersonId(response.getPersonID());
+                model.setUserToken(response.getToken());
+
                 DataRetriever retriever = new DataRetriever();
-                String message = retriever.pullData(HOST_NAME, PORT_NUMBER, response.getToken(), response.getPersonID());
+                String message = retriever.pullData(HOST_NAME, PORT_NUMBER);
                 if(message == null){
                     success = true;
                 }

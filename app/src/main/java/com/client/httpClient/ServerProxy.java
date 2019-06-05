@@ -126,7 +126,8 @@ public class ServerProxy {
             URL url = new URL("http://" + hostName + ":" + portNumber + "/event");
             HttpURLConnection http = (HttpURLConnection)url.openConnection();
             http.setRequestMethod("GET");
-            http.setDoOutput(true);
+            System.out.println("getEvent: type of request: " + http.getRequestMethod());
+            http.setDoOutput(false);
 
             // Add token to the request
             http.addRequestProperty("Authorization", token);
@@ -165,7 +166,7 @@ public class ServerProxy {
             URL url = new URL("http://" + hostName + ":" + portNumber + "/person");
             HttpURLConnection http = (HttpURLConnection)url.openConnection();
             http.setRequestMethod("GET");
-            http.setDoOutput(true);
+            http.setDoOutput(false);
 
             // Add token to the request
             http.addRequestProperty("Authorization", token);
