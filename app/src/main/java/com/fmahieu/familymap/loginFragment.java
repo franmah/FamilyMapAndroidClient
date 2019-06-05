@@ -1,5 +1,8 @@
 package com.fmahieu.familymap;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -21,6 +24,8 @@ import com.client.request.LoginRequest;
 import com.client.request.RegisterRequest;
 import com.client.response.ConnectionResponse;
 import com.client.service.DataRetriever;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 public class loginFragment extends Fragment {
 
@@ -185,9 +190,35 @@ public class loginFragment extends Fragment {
                 Model model = Model.getInstance();
                 makeToast("Connected: " + model.getUserPerson().getFirstName() + " " + model.getUserPerson().getLastName());
                 Log.i("TESTING", "THIS IS A TEST: " + model.getPeople().toString());
+
+                // Change fragment to MainMapFragment
+                //Intent intent = MainActivity.newIntent(getContext(), true);
+                //startActivity(intent);
             }
         }
     }
+
+    /*
+    private void checkGooglePlayServices(){
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int errorCode = apiAvailability.isGooglePlayServicesAvailable(getContext());
+
+        if (errorCode != ConnectionResult.SUCCESS) {
+            Dialog errorDialog = apiAvailability
+                    .getErrorDialog(this, errorCode, REQUEST_ERROR,
+                            new DialogInterface.OnCancelListener() {
+
+                                @Override
+                                public void onCancel(DialogInterface dialog) {
+                                    // Leave if services are unavailable.
+                                    finish();
+                                }
+                            });
+
+            errorDialog.show();
+        }
+    }
+    */
 
     private void makeToast(String message){
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
