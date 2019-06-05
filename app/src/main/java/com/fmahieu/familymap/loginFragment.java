@@ -1,5 +1,6 @@
 package com.fmahieu.familymap;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -66,10 +67,22 @@ public class loginFragment extends Fragment {
         mMaleButton = (RadioButton) view.findViewById(R.id.male_radioButton);
         mFemaleButton = (RadioButton) view.findViewById(R.id.femail_radioButton);
 
+
         mSignInButton = (Button) view.findViewById(R.id.sign_button);
         mSignInButton.setEnabled(false);
         mRegisterButton = (Button) view.findViewById(R.id.register_button);
         mRegisterButton.setEnabled(false);
+
+
+
+        /*** FOR TESTING PURPOSES ***/
+        /*** REMOVE WHEN DONE ***/
+        mHostNameText.setText("192.168.253.166");
+        mPortNumberText.setText("8080");
+        mUserNameText.setText("user");
+        mPasswordText.setText("pass");
+        mSignInButton.setEnabled(true);
+        /***** END OF TESTING PORTION ***/
 
         mHostNameText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -294,12 +307,14 @@ public class loginFragment extends Fragment {
                 Log.i("TESTING", "THIS IS A TEST: " + model.getPeople().toString());
 
                 // Change fragment to GoogleMapFragment
-                Intent intent = MainActivity.newIntent(getContext(), true);
-                startActivity(intent);
+                Activity mainActivityInstance = getActivity();
+                if(mainActivityInstance instanceof MainActivity) {
+                    ((MainActivity) mainActivityInstance).switchToMapFragment();
+                }
+
             }
         }
     }
-
 
     private void makeToast(String message){
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
