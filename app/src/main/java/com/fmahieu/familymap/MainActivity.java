@@ -19,37 +19,41 @@ public class MainActivity extends AppCompatActivity {
         isUserLoggedIn = getIntent().getBooleanExtra(USER_IS_LOGGED_IN, false);
 
         FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentById(R.id.connection_fragment_container);
+        Fragment fragment = fragmentManager.findFragmentById(R.id.main_activity_fragment_container);
 
         if(isUserLoggedIn){
             // get Map fragment:
             if(fragment == null){
-                fragment = new MapFragment();
-                fragmentManager.beginTransaction().add(R.id.connection_fragment_container, fragment).commit();
+                fragment = new MainMapFragment();
+                fragmentManager.beginTransaction().add(R.id.main_activity_fragment_container, fragment).commit();
             }
             else{
-                fragment = new MapFragment();
-                fragmentManager.beginTransaction().replace(R.id.connection_fragment_container, fragment).commit();
+                fragment = new MainMapFragment();
+                fragmentManager.beginTransaction().replace(R.id.main_activity_fragment_container, fragment).commit();
             }
         }
         else{
             if(fragment == null){
                 fragment = new loginFragment();
-                fragmentManager.beginTransaction().add(R.id.connection_fragment_container, fragment).commit();
+                fragmentManager.beginTransaction().add(R.id.main_activity_fragment_container, fragment).commit();
             }
             else{
                 fragment = new loginFragment();
-                fragmentManager.beginTransaction().replace(R.id.connection_fragment_container, fragment).commit();
+                fragmentManager.beginTransaction().replace(R.id.main_activity_fragment_container, fragment).commit();
             }
         }
         /*
-        Fragment connectionFragment = fragmentManager.findFragmentById(R.id.connection_fragment_container);
+        Fragment connectionFragment = fragmentManager.findFragmentById(R.id.main_activity_fragment_container);
 
         if(connectionFragment == null){
             connectionFragment = new loginFragment();
-            fragmentManager.beginTransaction().add(R.id.connection_fragment_container, connectionFragment).commit();
+            fragmentManager.beginTransaction().add(R.id.main_activity_fragment_container, connectionFragment).commit();
         }
         */
+    }
+
+    public void switchToMapFragment(){
+
     }
 
     public static Intent newIntent(Context context, boolean isLoggedIn) {

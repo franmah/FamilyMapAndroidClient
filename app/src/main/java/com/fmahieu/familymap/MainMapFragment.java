@@ -1,17 +1,36 @@
 package com.fmahieu.familymap;
 
-import android.Manifest;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.maps.SupportMapFragment;
+public class MainMapFragment extends Fragment {
 
-public class MainMapFragment extends SupportMapFragment {
-    private static final String[] LOCATION_PERMISSIONS = new String[]{
-            Manifest.permission.ACCESS_FINE_LOCATION,
-            Manifest.permission.ACCESS_COARSE_LOCATION,
-    };
-    private static final int REQUEST_LOCATION_PERMISSIONS = 0;
-    private GoogleApiClient mClient;
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_map, container, false);
+
+        FragmentManager fragmentManager = getChildFragmentManager();
+        Fragment mainMapFragment = fragmentManager.findFragmentById(R.id.google_map_container);
+
+        if(mainMapFragment == null){
+            mainMapFragment = new GoogleMapFragment();
+            fragmentManager.beginTransaction().add(R.id.google_map_container, mainMapFragment).commit();
+        }
+
+        return view;
+    }
 
 }

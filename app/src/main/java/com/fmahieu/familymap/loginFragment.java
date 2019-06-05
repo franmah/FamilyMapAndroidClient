@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,41 +65,142 @@ public class loginFragment extends Fragment {
         mEmailText = (EditText) view.findViewById(R.id.email_editText);
         mMaleButton = (RadioButton) view.findViewById(R.id.male_radioButton);
         mFemaleButton = (RadioButton) view.findViewById(R.id.femail_radioButton);
+
         mSignInButton = (Button) view.findViewById(R.id.sign_button);
+        mSignInButton.setEnabled(false);
         mRegisterButton = (Button) view.findViewById(R.id.register_button);
+        mRegisterButton.setEnabled(false);
+
+        mHostNameText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                isLoginTextFilled();
+                isRegisterTextFilled();
+            }
+        });
+        mPortNumberText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                isLoginTextFilled();
+                isRegisterTextFilled();
+            }
+        });
+        mUserNameText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                isLoginTextFilled();
+                isRegisterTextFilled();
+            }
+        });
+        mPasswordText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                isLoginTextFilled();
+                isRegisterTextFilled();
+            }
+        });
+        mFirstNameText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                isLoginTextFilled();
+                isRegisterTextFilled();
+            }
+        });
+        mLastNameText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                isLoginTextFilled();
+                isRegisterTextFilled();
+            }
+        });
+        mEmailText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                isLoginTextFilled();
+                isRegisterTextFilled();
+            }
+        });
 
         mSignInButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                if(isLoginTextFilled()){
-                    Log.i(TAG, "Login button pressed, moving to http proxy...");
-                    new LoginUser().execute();
-
-                }
-                else{
-                    Toast.makeText(getContext(), R.string.incorrect_info_login_toast, Toast.LENGTH_SHORT).show();
-                }
+                Log.i(TAG, "Login button pressed, moving to http proxy...");
+                new LoginUser().execute();
             }
         });
 
         mRegisterButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                if(isRegisterTextFilled()){
-                    Log.i(TAG, "Register button pressed, moving to http proxy...");
-                    new RegisterUser().execute();
-                }
-                else{
-                    Toast.makeText(getContext(), R.string.incorrect_info_register_toast, Toast.LENGTH_SHORT).show();
-                }
+                Log.i(TAG, "Register button pressed, moving to http proxy...");
+                new RegisterUser().execute();
             }
         });
 
         return view;
-    }
-
-    public void test(){
-        new RetrieveData().execute();
     }
 
     private class LoginUser extends AsyncTask<Void, Void, ConnectionResponse>{
@@ -119,8 +222,7 @@ public class loginFragment extends Fragment {
                 model.setUserPersonId(response.getPersonID());
 
                 Log.i(TAG, "RegisterAsync.onPostExecute : Starting retrieveData aSyncTask");
-                //new RetrieveData().execute();
-                test();
+                new RetrieveData().execute();
 
             }
             else{
@@ -191,50 +293,48 @@ public class loginFragment extends Fragment {
                 makeToast("Connected: " + model.getUserPerson().getFirstName() + " " + model.getUserPerson().getLastName());
                 Log.i("TESTING", "THIS IS A TEST: " + model.getPeople().toString());
 
-                // Change fragment to MainMapFragment
-                //Intent intent = MainActivity.newIntent(getContext(), true);
-                //startActivity(intent);
+                // Change fragment to GoogleMapFragment
+                Intent intent = MainActivity.newIntent(getContext(), true);
+                startActivity(intent);
             }
         }
     }
 
-    /*
-    private void checkGooglePlayServices(){
-        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
-        int errorCode = apiAvailability.isGooglePlayServicesAvailable(getContext());
-
-        if (errorCode != ConnectionResult.SUCCESS) {
-            Dialog errorDialog = apiAvailability
-                    .getErrorDialog(this, errorCode, REQUEST_ERROR,
-                            new DialogInterface.OnCancelListener() {
-
-                                @Override
-                                public void onCancel(DialogInterface dialog) {
-                                    // Leave if services are unavailable.
-                                    finish();
-                                }
-                            });
-
-            errorDialog.show();
-        }
-    }
-    */
 
     private void makeToast(String message){
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 
-    private boolean isLoginTextFilled(){
-        return (!mHostNameText.getText().toString().equals("") &&
+    private void isLoginTextFilled(){
+        if (!mHostNameText.getText().toString().equals("") &&
                 !mPortNumberText.getText().toString().equals("") &&
                 !mUserNameText.getText().toString().equals("") &&
-                !mPasswordText.getText().toString().equals(""));
+                !mPasswordText.getText().toString().equals(""))
+        {
+
+            mSignInButton.setEnabled(true);
+        }
+        else{
+            mSignInButton.setEnabled(false);
+        }
     }
 
-    private boolean isRegisterTextFilled(){
-        return (isLoginTextFilled() &&
+
+    private void isRegisterTextFilled(){
+        if (!mHostNameText.getText().toString().equals("") &&
+                !mPortNumberText.getText().toString().equals("") &&
+                !mUserNameText.getText().toString().equals("") &&
+                !mPasswordText.getText().toString().equals("")&&
                 !mFirstNameText.getText().toString().equals("") &&
                 !mLastNameText.getText().toString().equals("") &&
-                !mEmailText.getText().toString().equals(""));
+                !mEmailText.getText().toString().equals(""))
+        {
+
+            mRegisterButton.setEnabled(true);
+        }
+        else{
+            mRegisterButton.setEnabled(false);
+        }
     }
+
 }
