@@ -12,7 +12,11 @@
         android:layout_height="wrap_content"
         android:id="@+id/google_map_container"
         android:layout_weight="2">
-
+        <fragment
+            android:id="@+id/map_google"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            class="com.google.android.gms.maps.SupportMapFragment" />
 
     </FrameLayout>
 

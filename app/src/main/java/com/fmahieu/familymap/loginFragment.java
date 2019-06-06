@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import com.client.Tasks.LoginUserTask;
 import com.client.httpClient.ServerProxy;
 import com.client.models.Model;
 import com.client.request.LoginRequest;
@@ -30,7 +31,7 @@ import com.client.service.DataRetriever;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
-public class loginFragment extends Fragment {
+public class loginFragment extends Fragment implements LoginUserTask.LoginUserListener {
 
     private final String TAG = "LoginFragment";
 
@@ -77,7 +78,7 @@ public class loginFragment extends Fragment {
 
         /*** FOR TESTING PURPOSES ***/
         /*** REMOVE WHEN DONE ***/
-        mHostNameText.setText("192.168.253.166");
+        mHostNameText.setText("192.168.1.11");
         mPortNumberText.setText("8080");
         mUserNameText.setText("user");
         mPasswordText.setText("pass");
@@ -201,6 +202,8 @@ public class loginFragment extends Fragment {
             @Override
             public void onClick(View v){
                 Log.i(TAG, "Login button pressed, moving to http proxy...");
+                //callLoginUserTask(); // check in the book for the getActivity.this call
+                // Doesn't work, the app stop, ask teacher
                 new LoginUser().execute();
             }
         });
@@ -215,7 +218,28 @@ public class loginFragment extends Fragment {
 
         return view;
     }
+        /*** CORRECT METHOD TO USE TASK ***/
+    private void callLoginUserTask(){
+        new LoginUserTask(this).execute();
+    }
 
+    @Override
+    public void loginResponse(String response, boolean isErrorMessage){
+        if(isErrorMessage){
+            makeToast(response);
+        }
+        else{
+            makeToast(response);
+
+            // Change fragment to GoogleMapFragment
+            Activity mainActivityInstance = getActivity();
+            if(mainActivityInstance instanceof MainActivity) {
+                ((MainActivity) mainActivityInstance).switchToMapFragment();
+            }
+        }
+    }
+
+    /*** LESS CORRECT METHOD BUT WORKING ***/
     private class LoginUser extends AsyncTask<Void, Void, ConnectionResponse>{
         @Override
         protected ConnectionResponse doInBackground(Void... params){
@@ -316,6 +340,7 @@ public class loginFragment extends Fragment {
         }
     }
 
+
     private void makeToast(String message){
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
@@ -333,7 +358,6 @@ public class loginFragment extends Fragment {
             mSignInButton.setEnabled(false);
         }
     }
-
 
     private void isRegisterTextFilled(){
         if (!mHostNameText.getText().toString().equals("") &&
