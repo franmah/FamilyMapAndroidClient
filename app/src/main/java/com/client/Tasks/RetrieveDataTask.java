@@ -45,7 +45,6 @@ public class RetrieveDataTask extends AsyncTask<RetrieveDataRequest, Void, Strin
 
             // TEST:
             Model model = Model.getInstance();
-            Log.i("******TESTING*******", "THIS IS A TEST: " + model.getPeople().toString());
 
             listener.responseMessage("Connected: " + model.getUserPerson().getFirstName() + " " +
                                         model.getUserPerson().getLastName(), false);

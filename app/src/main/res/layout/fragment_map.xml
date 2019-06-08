@@ -7,30 +7,47 @@
     tools:context="com.fmahieu.familymap.MainMapFragment">
 
 
-    <FrameLayout
+    <fragment
+        android:id="@+id/google_map_fragment"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/google_map_container"
-        android:layout_weight="2">
-        <fragment
-            android:id="@+id/map_google"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            class="com.google.android.gms.maps.SupportMapFragment" />
-
-    </FrameLayout>
+        android:layout_weight="1" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="15dp">
 
-        <TextView
-            android:layout_width="match_parent"
+        <ImageView
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:text="THIS IS A TEST"/>
+            android:id="@+id/icon_ImageView"
+            android:layout_marginRight="10dp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/person_name_view"
+            android:text="TEST"
+            android:layout_gravity="left"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/event_info_view"
+                android:text="TEST"
+                android:layout_gravity="left"/>
+
+        </LinearLayout>
+
 
     </LinearLayout>
-
 
 </LinearLayout>

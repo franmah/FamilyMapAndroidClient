@@ -78,7 +78,7 @@ public class loginFragment extends Fragment implements LoginUserTask.LoginUserLi
 
         /*** FOR TESTING PURPOSES ***/
         /*** REMOVE WHEN DONE ***/
-        mHostNameText.setText("192.168.1.11");
+        mHostNameText.setText("192.168.1.9");
         mPortNumberText.setText("8080");
         mUserNameText.setText("user");
         mPasswordText.setText("pass");
@@ -231,7 +231,7 @@ public class loginFragment extends Fragment implements LoginUserTask.LoginUserLi
         else{
             makeToast(response);
 
-            // Change fragment to GoogleMapFragment
+            // Change fragment to GoogleMapFragmentNOT_USED
             Activity mainActivityInstance = getActivity();
             if(mainActivityInstance instanceof MainActivity) {
                 ((MainActivity) mainActivityInstance).switchToMapFragment();
@@ -328,9 +328,8 @@ public class loginFragment extends Fragment implements LoginUserTask.LoginUserLi
                 // TEST:
                 Model model = Model.getInstance();
                 makeToast("Connected: " + model.getUserPerson().getFirstName() + " " + model.getUserPerson().getLastName());
-                Log.i("TESTING", "THIS IS A TEST: " + model.getPeople().toString());
 
-                // Change fragment to GoogleMapFragment
+                // Change fragment to GoogleMapFragmentNOT_USED
                 Activity mainActivityInstance = getActivity();
                 if(mainActivityInstance instanceof MainActivity) {
                     ((MainActivity) mainActivityInstance).switchToMapFragment();

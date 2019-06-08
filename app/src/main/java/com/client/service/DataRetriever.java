@@ -104,8 +104,6 @@ public class DataRetriever {
         }
 
         model.setPeople(result);
-        model.setFemaleAncestors(femaleAncestors);
-        model.setMaleAncestors(maleAncestors);
         return null;
     }
 

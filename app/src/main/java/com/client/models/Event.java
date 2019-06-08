@@ -73,4 +73,8 @@ public class Event{
                 ", year=" + year +
                 '}';
     }
+
+    public String printEventInfo(){
+        return getEventType() + " " + getCity() +", " + getCountry() + " (" +getYear() + ")";
+    }
 }

@@ -16,6 +16,15 @@
     <string name="incorrect_info_login_toast">Need server host, server port, user name, and password.</string>
     <string name="incorrect_info_register_toast">Every field must be filled.</string>
     <string name="title_activity_map">Map</string>
+    
+    <!-- MainMapFragment -->
+    <string name="basic_upper_text">Click on a maker</string>
+    <string name="basic_lower_text">to see event details</string>
+
+    <!-- MainActivityMapMenu -->
+    <string name="search_title">Search</string>
+    <string name="filter_title">Filter</string>
+    <string name="settings_title">Settings</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

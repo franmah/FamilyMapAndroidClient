@@ -28,4 +28,6 @@ dependencies {
     implementation files('libs\\gson-2.6.2.jar')
     implementation 'com.google.android.gms:play-services-maps:16.1.0'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
+    implementation 'com.joanzapata.iconify:android-iconify-meteocons:2.2.2'
+    implementation 'com.joanzapata.iconify:android-iconify-fontawesome:2.2.2'
 }

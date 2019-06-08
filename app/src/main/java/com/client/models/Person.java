@@ -76,4 +76,8 @@ public class Person{
         return  personID.length() & getAssociatedUsername().length() ^ getFirstName().length() &
                 getLastName().length() ^ getGender().length();
     }
+
+    public String printName(){
+        return getFirstName() + " " + getLastName();
+    }
 }
