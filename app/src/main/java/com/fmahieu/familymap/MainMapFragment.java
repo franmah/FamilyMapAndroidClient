@@ -1,5 +1,7 @@
 package com.fmahieu.familymap;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -8,6 +10,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -54,11 +59,10 @@ public class MainMapFragment extends Fragment {
 
     private final float ZOOM_LEVEL = 5;
 
-
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
         // String currentEventId = (String) getArguments().getCharSequence(ARG_EVENT_ID);
 
     }
@@ -72,11 +76,15 @@ public class MainMapFragment extends Fragment {
 
         initWidgets(view);
 
+        getMap();
+
+        return view;
+    }
+
+    private void getMap(){
         // Get map
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
-                        .findFragmentById(R.id.google_map_fragment);
-
-
+                .findFragmentById(R.id.google_map_fragment);
 
         Log.i(TAG, "getting MapAsync...");
         mapFragment.getMapAsync(new OnMapReadyCallback() {
@@ -88,8 +96,49 @@ public class MainMapFragment extends Fragment {
                 initMap();
             }
         });
+    }
 
-        return view;
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.main_activity_map_menu, menu);
+
+        menu.findItem(R.id.search_item).setIcon(
+                new IconDrawable(getActivity(), FontAwesomeIcons.fa_search)
+                .colorRes(R.color.menuItem)
+                .actionBarSize());
+
+        menu.findItem(R.id.filter_item).setIcon(
+                new IconDrawable(getActivity(), FontAwesomeIcons.fa_filter)
+                .colorRes(R.color.menuItem)
+                .actionBarSize());
+
+        menu.findItem(R.id.settings_item).setIcon(
+                new IconDrawable(getActivity(), FontAwesomeIcons.fa_gear)
+                .colorRes(R.color.menuItem)
+                .actionBarSize());
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.search_item:
+                // call the search activity
+                return true;
+            case R.id.filter_item:
+                // call filter activity
+                Log.i(TAG, "onOptionsItemSelected(): Starting FilterActivity");
+                Intent intent = new Intent(getActivity(), FilterActivity.class);
+                startActivity(intent);
+
+                // need to implement on resume to update the map.
+                return true;
+            case R.id.settings_item:
+                // call settings activity
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void initWidgets(View view){
@@ -110,7 +159,6 @@ public class MainMapFragment extends Fragment {
 
     }
 
-
     private void initMap(){
         map.clear();
         setMarkers();
@@ -118,20 +166,23 @@ public class MainMapFragment extends Fragment {
 
     }
 
-    public void setMarkers() {
+    private void setMarkers() {
         Log.i(TAG, "placing markers");
+        Map<String, String> eventTypes = model.getEventTypes();
 
         map.clear();
 
         Map<String, Event> mapEvents = model.getEvents();
         for (Map.Entry<String, Event> pair : mapEvents.entrySet()) {
-            LatLng position = new LatLng(pair.getValue().getLatitude(), pair.getValue().getLongitude());
-            MarkerOptions markerOptions = new MarkerOptions().position(position);
+            if(eventTypes.get(pair.getValue().getEventType()).equals("t")) {
+                LatLng position = new LatLng(pair.getValue().getLatitude(), pair.getValue().getLongitude());
+                MarkerOptions markerOptions = new MarkerOptions().position(position);
 
-            Marker marker = map.addMarker(markerOptions);
-            marker.setTag(pair.getValue().getEventId());
+                Marker marker = map.addMarker(markerOptions);
+                marker.setTag(pair.getValue().getEventId());
 
-            eventMarkers.put(marker, pair.getValue());
+                eventMarkers.put(marker, pair.getValue());
+            }
 
         }
     }
@@ -194,19 +245,26 @@ public class MainMapFragment extends Fragment {
         Set<Event> personEvents = model.getPersonEvents(centralEvent.getPersonId());
 
         for(Event event : personEvents){
-            Polyline line = map.addPolyline(new PolylineOptions().add(
-                    new LatLng(centralEvent.getLatitude(), centralEvent.getLongitude()),
-                    new LatLng(event.getLatitude(), event.getLongitude()))
-                    .width(5)
-                    .color(Color.RED));
-            lines.add(line);
+
+            if(model.getEventTypes().get(event.getEventType()).equals("t")) {
+
+                Polyline line = map.addPolyline(new PolylineOptions().add(
+                        new LatLng(centralEvent.getLatitude(), centralEvent.getLongitude()),
+                        new LatLng(event.getLatitude(), event.getLongitude()))
+                        .width(5)
+                        .color(Color.RED));
+                lines.add(line);
+            }
         }
 
         Log.i(TAG, "drawLines(): lines have been drawn");
     }
 
-
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        getMap();
+    }
 }
 
 

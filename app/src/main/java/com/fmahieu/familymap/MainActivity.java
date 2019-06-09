@@ -35,6 +35,11 @@ public class MainActivity extends AppCompatActivity{
         }
     }
 
+    public void TestCallFilterActivity(){
+        Intent intent = new Intent(this, FilterActivity.class);
+        startActivity(intent);
+    }
+
     public void switchToMapFragment(){
         if(isGoogleServicesOK()) {
             Log.i(TAG, "switchToMapFragment: google services checked!");

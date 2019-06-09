@@ -26,10 +26,12 @@ public class Model {
         userPerson = null;
     }
 
+    // Filter
+    private Map<String, String> eventTypes; // Map<EventId, "t" or "f"
+
 
     private Map<String, Person> people;
     private Map<String, Event> events;
-    private Set<String> eventTypes;
     private Person userPerson;
 
     private String userToken = null;
@@ -49,8 +51,11 @@ public class Model {
     public Map<String, Event> getEvents() { return events; }
     public void setEvents(Map<String, Event> events) { this.events = events; }
 
-    public Set<String> getEventTypes() { return eventTypes; }
-    public void setEventTypes(Set<String> eventTypes) { this.eventTypes = eventTypes; }
+    public Map<String, String> getEventTypes() { return eventTypes; }
+    public void setEventTypes(Map<String, String> eventTypes) { this.eventTypes = eventTypes; }
+    public void updateEventType(String key, String value){
+        eventTypes.put(key, value);
+    }
 
     public Person getUserPerson() { return userPerson; }
     public void setUserPerson(Person user) { this.userPerson = user; }

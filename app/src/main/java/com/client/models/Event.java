@@ -59,6 +59,8 @@ public class Event{
     public String getEventType(){return eventType;}
     public int getYear(){return year;}
 
+    public void setEventType(String type){this.eventType = type;}
+
     @Override
     public String toString() {
         return "Event{" +

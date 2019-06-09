@@ -231,7 +231,7 @@ public class loginFragment extends Fragment implements LoginUserTask.LoginUserLi
         else{
             makeToast(response);
 
-            // Change fragment to GoogleMapFragmentNOT_USED
+            // Change fragment to MainMapFragment
             Activity mainActivityInstance = getActivity();
             if(mainActivityInstance instanceof MainActivity) {
                 ((MainActivity) mainActivityInstance).switchToMapFragment();

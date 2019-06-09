@@ -5,6 +5,7 @@ import com.client.models.*;
 import com.client.response.EventAllResponse;
 import com.client.response.PersonAllResponse;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -65,12 +66,28 @@ public class DataRetriever {
 
         System.out.println("DataRetriever.getEvents(): events response came back with array of events");
         Map<String, Event> result = new TreeMap<>();
-        Set<String> eventTypes = new TreeSet<>();
+        Map<String, String> eventTypes = new HashMap<>();
 
         for(Event event : response.getEvents()){
+            assert event.getEventType().length() > 0;
+
+            // Set type to lowerCase and the first letter to upperCase
+            String type = event.getEventType().toLowerCase();
+            String typeEntry = type.substring(0,1).toUpperCase() + type.substring(1);
+
+            if(!eventTypes.containsKey(typeEntry)) {
+                eventTypes.put(typeEntry, "t");
+            }
+
+            event.setEventType(typeEntry); // Update the event type. (avoid lower/upper cases differences)
             result.put(event.getEventId(), event);
-            eventTypes.add(event.getEventType());
         }
+
+        // Add Gender/Side events
+        eventTypes.put("Father's Side", "t");
+        eventTypes.put("Mother's Side", "t");
+        eventTypes.put("Male", "t");
+        eventTypes.put("Female", "t");
 
         model.setEvents(result);
         model.setEventTypes(eventTypes);
