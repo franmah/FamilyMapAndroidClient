@@ -45,9 +45,10 @@ public class RetrieveDataTask extends AsyncTask<RetrieveDataRequest, Void, Strin
 
             // TEST:
             Model model = Model.getInstance();
-
+            listener.responseMessage("Connected: " + " " , false);
+            /*
             listener.responseMessage("Connected: " + model.getUserPerson().getFirstName() + " " +
-                                        model.getUserPerson().getLastName(), false);
+                                        model.getUserPerson().getLastName(), false); */
         }
     }
 }

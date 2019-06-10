@@ -78,12 +78,172 @@ public class loginFragment extends Fragment implements LoginUserTask.LoginUserLi
 
         /*** FOR TESTING PURPOSES ***/
         /*** REMOVE WHEN DONE ***/
-        mHostNameText.setText("192.168.1.9");
+        mHostNameText.setText("192.168.1.11");
         mPortNumberText.setText("8080");
         mUserNameText.setText("user");
         mPasswordText.setText("pass");
         mSignInButton.setEnabled(true);
         /***** END OF TESTING PORTION ***/
+
+        initWidget();
+
+
+        return view;
+    }
+        /*** CORRECT METHOD TO USE TASK ***/
+    private void callLoginUserTask(){
+        new LoginUserTask(this).execute();
+    }
+
+    @Override
+    public void loginResponse(String response, boolean isErrorMessage){
+        if(isErrorMessage){
+            makeToast(response);
+        }
+        else{
+            makeToast(response);
+
+            // Change fragment to MainMapFragment
+            Activity mainActivityInstance = getActivity();
+            if(mainActivityInstance instanceof MainActivity) {
+                ((MainActivity) mainActivityInstance).switchToMapFragment();
+            }
+        }
+    }
+
+    /*** LESS CORRECT METHOD BUT WORKING ***/
+    private class LoginUser extends AsyncTask<Void, Void, ConnectionResponse>{
+        @Override
+        protected ConnectionResponse doInBackground(Void... params){
+            Log.i(TAG, "in LoginUser, starting login request...");
+            ServerProxy proxy = new ServerProxy(mHostNameText.getText().toString(), mPortNumberText.getText().toString());
+            ConnectionResponse response = proxy.login(new LoginRequest(mUserNameText.getText().toString(), mPasswordText.getText().toString()));
+
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(ConnectionResponse response){
+
+            if(response.getErrorMessage() == null){
+                Model model = Model.getInstance();
+                model.setUserToken(response.getToken());
+                model.setUserPersonId(response.getPersonID());
+
+                Log.i(TAG, "RegisterAsync.onPostExecute : Starting retrieveData aSyncTask");
+                new RetrieveData().execute();
+
+            }
+            else{
+                Log.e(TAG,response.getErrorMessage());
+                makeToast(response.getErrorMessage());
+            }
+        }
+    }
+
+    private class RegisterUser extends AsyncTask<Void, Void, ConnectionResponse>{
+        @Override
+        protected ConnectionResponse doInBackground(Void... params){
+            Log.i(TAG, "in RegisterUser, starting register request...");
+            ServerProxy proxy = new ServerProxy(mHostNameText.getText().toString(), mPortNumberText.getText().toString());
+
+            String gender = "m";
+            if(mFemaleButton.isChecked()){
+                gender = "f";
+            }
+
+            ConnectionResponse response = proxy.register(new RegisterRequest(mUserNameText.getText().toString(),
+                    mPasswordText.getText().toString(), mEmailText.getText().toString(), mFirstNameText.getText().toString(),
+                    mLastNameText.getText().toString(), gender));
+
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(ConnectionResponse response){
+
+            if(response.getErrorMessage() == null){
+                Model model = Model.getInstance();
+                model.setUserToken(response.getToken());
+                model.setUserPersonId(response.getPersonID());
+
+                Log.i(TAG, "RegisterAsync.onPostExecute : Starting retrieveData aSyncTask");
+                new RetrieveData().execute();
+
+            }
+            else{
+                Log.e(TAG,response.getErrorMessage());
+                makeToast(response.getErrorMessage());
+            }
+        }
+    }
+
+    private class RetrieveData extends AsyncTask<Void, Void, String>{
+        @Override
+        protected String doInBackground(Void... params){
+            Log.i(TAG, "in RetrieveData, starting data request...");
+            DataRetriever dataRetriever = new DataRetriever();
+            String response = dataRetriever.pullData(mHostNameText.getText().toString(), mPortNumberText.getText().toString());
+
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(String response){
+            if(response != null){
+                Log.i(TAG, "in RetrieveData, response from DataRetriever came back not null, an error occurred.");
+                makeToast(response);
+            }
+            else {
+                Log.i(TAG, "in RetrieveData, response from DataRetriever came back null, data has been successfully loaded");
+
+                // Change fragment to GoogleMapFragmentNOT_USED
+                Activity mainActivityInstance = getActivity();
+                if(mainActivityInstance instanceof MainActivity) {
+                    ((MainActivity) mainActivityInstance).switchToMapFragment();
+                }
+
+            }
+        }
+    }
+
+
+    private void makeToast(String message){
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void isLoginTextFilled(){
+        if (!mHostNameText.getText().toString().equals("") &&
+                !mPortNumberText.getText().toString().equals("") &&
+                !mUserNameText.getText().toString().equals("") &&
+                !mPasswordText.getText().toString().equals(""))
+        {
+
+            mSignInButton.setEnabled(true);
+        }
+        else{
+            mSignInButton.setEnabled(false);
+        }
+    }
+
+    private void isRegisterTextFilled(){
+        if (!mHostNameText.getText().toString().equals("") &&
+                !mPortNumberText.getText().toString().equals("") &&
+                !mUserNameText.getText().toString().equals("") &&
+                !mPasswordText.getText().toString().equals("")&&
+                !mFirstNameText.getText().toString().equals("") &&
+                !mLastNameText.getText().toString().equals("") &&
+                !mEmailText.getText().toString().equals(""))
+        {
+
+            mRegisterButton.setEnabled(true);
+        }
+        else{
+            mRegisterButton.setEnabled(false);
+        }
+    }
+
+    private void initWidget(){
 
         mHostNameText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -215,164 +375,5 @@ public class loginFragment extends Fragment implements LoginUserTask.LoginUserLi
                 new RegisterUser().execute();
             }
         });
-
-        return view;
     }
-        /*** CORRECT METHOD TO USE TASK ***/
-    private void callLoginUserTask(){
-        new LoginUserTask(this).execute();
-    }
-
-    @Override
-    public void loginResponse(String response, boolean isErrorMessage){
-        if(isErrorMessage){
-            makeToast(response);
-        }
-        else{
-            makeToast(response);
-
-            // Change fragment to MainMapFragment
-            Activity mainActivityInstance = getActivity();
-            if(mainActivityInstance instanceof MainActivity) {
-                ((MainActivity) mainActivityInstance).switchToMapFragment();
-            }
-        }
-    }
-
-    /*** LESS CORRECT METHOD BUT WORKING ***/
-    private class LoginUser extends AsyncTask<Void, Void, ConnectionResponse>{
-        @Override
-        protected ConnectionResponse doInBackground(Void... params){
-            Log.i(TAG, "in LoginUser, starting login request...");
-            ServerProxy proxy = new ServerProxy(mHostNameText.getText().toString(), mPortNumberText.getText().toString());
-            ConnectionResponse response = proxy.login(new LoginRequest(mUserNameText.getText().toString(), mPasswordText.getText().toString()));
-
-            return response;
-        }
-
-        @Override
-        protected void onPostExecute(ConnectionResponse response){
-
-            if(response.getErrorMessage() == null){
-                Model model = Model.getInstance();
-                model.setUserToken(response.getToken());
-                model.setUserPersonId(response.getPersonID());
-
-                Log.i(TAG, "RegisterAsync.onPostExecute : Starting retrieveData aSyncTask");
-                new RetrieveData().execute();
-
-            }
-            else{
-                Log.e(TAG,response.getErrorMessage());
-                makeToast(response.getErrorMessage());
-            }
-        }
-    }
-
-    private class RegisterUser extends AsyncTask<Void, Void, ConnectionResponse>{
-        @Override
-        protected ConnectionResponse doInBackground(Void... params){
-            Log.i(TAG, "in RegisterUser, starting register request...");
-            ServerProxy proxy = new ServerProxy(mHostNameText.getText().toString(), mPortNumberText.getText().toString());
-
-            String gender = "m";
-            if(mFemaleButton.isChecked()){
-                gender = "f";
-            }
-
-            ConnectionResponse response = proxy.register(new RegisterRequest(mUserNameText.getText().toString(),
-                    mPasswordText.getText().toString(), mEmailText.getText().toString(), mFirstNameText.getText().toString(),
-                    mLastNameText.getText().toString(), gender));
-
-            return response;
-        }
-
-        @Override
-        protected void onPostExecute(ConnectionResponse response){
-
-            if(response.getErrorMessage() == null){
-                Model model = Model.getInstance();
-                model.setUserToken(response.getToken());
-                model.setUserPersonId(response.getPersonID());
-
-                Log.i(TAG, "RegisterAsync.onPostExecute : Starting retrieveData aSyncTask");
-                new RetrieveData().execute();
-
-            }
-            else{
-                Log.e(TAG,response.getErrorMessage());
-                makeToast(response.getErrorMessage());
-            }
-        }
-    }
-
-    private class RetrieveData extends AsyncTask<Void, Void, String>{
-        @Override
-        protected String doInBackground(Void... params){
-            Log.i(TAG, "in RetrieveData, starting data request...");
-            DataRetriever dataRetriever = new DataRetriever();
-            String response = dataRetriever.pullData(mHostNameText.getText().toString(), mPortNumberText.getText().toString());
-
-            return response;
-        }
-
-        @Override
-        protected void onPostExecute(String response){
-            if(response != null){
-                Log.i(TAG, "in RetrieveData, response from DataRetriever came back not null, an error occurred.");
-                makeToast(response);
-            }
-            else {
-                Log.i(TAG, "in RetrieveData, response from DataRetriever came back null, data has been successfully loaded");
-
-                // TEST:
-                Model model = Model.getInstance();
-                makeToast("Connected: " + model.getUserPerson().getFirstName() + " " + model.getUserPerson().getLastName());
-
-                // Change fragment to GoogleMapFragmentNOT_USED
-                Activity mainActivityInstance = getActivity();
-                if(mainActivityInstance instanceof MainActivity) {
-                    ((MainActivity) mainActivityInstance).switchToMapFragment();
-                }
-
-            }
-        }
-    }
-
-
-    private void makeToast(String message){
-        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-    }
-
-    private void isLoginTextFilled(){
-        if (!mHostNameText.getText().toString().equals("") &&
-                !mPortNumberText.getText().toString().equals("") &&
-                !mUserNameText.getText().toString().equals("") &&
-                !mPasswordText.getText().toString().equals(""))
-        {
-
-            mSignInButton.setEnabled(true);
-        }
-        else{
-            mSignInButton.setEnabled(false);
-        }
-    }
-
-    private void isRegisterTextFilled(){
-        if (!mHostNameText.getText().toString().equals("") &&
-                !mPortNumberText.getText().toString().equals("") &&
-                !mUserNameText.getText().toString().equals("") &&
-                !mPasswordText.getText().toString().equals("")&&
-                !mFirstNameText.getText().toString().equals("") &&
-                !mLastNameText.getText().toString().equals("") &&
-                !mEmailText.getText().toString().equals(""))
-        {
-
-            mRegisterButton.setEnabled(true);
-        }
-        else{
-            mRegisterButton.setEnabled(false);
-        }
-    }
-
 }

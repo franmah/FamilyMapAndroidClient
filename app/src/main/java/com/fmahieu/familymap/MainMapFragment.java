@@ -56,6 +56,8 @@ public class MainMapFragment extends Fragment {
 
     private List<Polyline> lines = new ArrayList<>();
     private Map<Marker, Event> eventMarkers = new HashMap<>();
+    private Map<String, String> eventTypes = model.getEventTypes();
+    private Map<String, Event>  allEvents = model.getEvents();
 
     private final float ZOOM_LEVEL = 5;
 
@@ -73,9 +75,7 @@ public class MainMapFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_map, container, false);
 
         Log.i(TAG, "Loading/drawing map ...");
-
         initWidgets(view);
-
         getMap();
 
         return view;
@@ -167,24 +167,34 @@ public class MainMapFragment extends Fragment {
     }
 
     private void setMarkers() {
+        assert map != null;
         Log.i(TAG, "placing markers");
-        Map<String, String> eventTypes = model.getEventTypes();
 
         map.clear();
+        eventMarkers.clear();
 
-        Map<String, Event> mapEvents = model.getEvents();
-        for (Map.Entry<String, Event> pair : mapEvents.entrySet()) {
-            if(eventTypes.get(pair.getValue().getEventType()).equals("t")) {
-                LatLng position = new LatLng(pair.getValue().getLatitude(), pair.getValue().getLongitude());
+        Set<String> mapEvents = model.getCurrentEvents();
+        if(mapEvents == null) {
+            return; // No events to show because of Filters.
+        }
+
+
+        for(String eventId : mapEvents){
+            Event event = allEvents.get(eventId);
+
+            if(eventTypes.get(event.getEventType()).equals("t")) {
+                LatLng position = new LatLng(event.getLatitude(), event.getLongitude());
                 MarkerOptions markerOptions = new MarkerOptions().position(position);
 
                 Marker marker = map.addMarker(markerOptions);
-                marker.setTag(pair.getValue().getEventId());
+                marker.setTag(event.getEventId());
 
-                eventMarkers.put(marker, pair.getValue());
+                eventMarkers.put(marker, event);
             }
 
         }
+
+        Log.i(TAG, "Markers have been placed");
     }
 
     private void setMarkerListener(){
@@ -199,7 +209,7 @@ public class MainMapFragment extends Fragment {
                 drawLines(eventClicked);
 
                 // Update icon + text
-                Person person = model.getPerson(eventClicked.getPersonId());
+                Person person = model.getPeople().get(eventClicked.getPersonId());
                 mPersonName.setText(person.printName());
                 mEventInfo.setText(eventClicked.printEventInfo());
 
@@ -233,18 +243,23 @@ public class MainMapFragment extends Fragment {
     }
 
     private void drawLines(Event centralEvent){
+
+        if(eventMarkers == null){
+            return;
+        }
+
         Log.i(TAG, "drawLines(): removing previous lines if any");
         // Remove previous lines
         for(Polyline line : lines){
-            Log.i(TAG,"Removing line: " + line.toString());
             line.remove();
         }
         lines.clear();
 
         Log.i(TAG, "drawing new lines for event: " + centralEvent.getEventId());
-        Set<Event> personEvents = model.getPersonEvents(centralEvent.getPersonId());
+        Set<String> personEvents = model.getPersonEvents(centralEvent.getPersonId());
 
-        for(Event event : personEvents){
+        for(String eventId : personEvents){
+            Event event = allEvents.get(eventId);
 
             if(model.getEventTypes().get(event.getEventType()).equals("t")) {
 
