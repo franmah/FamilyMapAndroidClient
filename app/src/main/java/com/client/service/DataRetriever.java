@@ -88,6 +88,7 @@ public class DataRetriever {
         Map<String, String> eventTypes = new HashMap<>();
         Set<String> maleEvents = new HashSet<>();
         Set<String> femaleEvents = new HashSet<>();
+        Set<String> userEvents = new HashSet<>();
 
         for(Event event : response.getEvents()){
             assert event.getEventType().length() > 0;
@@ -107,6 +108,10 @@ public class DataRetriever {
                 femaleEvents.add(event.getEventId());
             }
 
+            if(event.getPersonId() == userPersonId){
+                userEvents.add(event.getEventId());
+            }
+
             event.setEventType(typeEntry); // Update the event type. (avoid lower/upper cases differences)
             result.put(event.getEventId(), event);
         }
@@ -119,6 +124,7 @@ public class DataRetriever {
 
         model.setEvents(result);
         model.setEventTypes(eventTypes);
+
         return null;
     }
 
@@ -174,6 +180,16 @@ public class DataRetriever {
             model.setEventFemaleMotherSide(eventFemaleFamilySide);
             model.setEventMaleMotherSide(eventMaleFamilySide);
 
+/*
+            Log.i("FAMILY_TEST", "SHOWING MOTHER SIDE EVENTS");
+            printSetsTest();
+
+            Set<String> test = model.getEventMotherSide();
+            Log.i("FAMILY_TEST", "TESTING EVENT ON MOTHER SIDE FROM MODEL");
+            for(String string : test){
+                Log.i("FAMILY_TEST", model.getEvents().get(string).toStringTMP());
+            }
+*/
             // Set father side of the family.
             familySide.clear();
             familySideFemale.clear();
@@ -182,7 +198,7 @@ public class DataRetriever {
             eventMaleFamilySide.clear();
             eventFemaleFamilySide.clear();
 
-            Log.i(TAG, "createFatherMotherSide(): creating father side");
+
             createFamilySide(model.getPeople().get(userPersonId).getFatherId());
             model.setPersonFatherSide(familySide);
             model.setPersonMaleFatherSide(familySideMale);
@@ -191,6 +207,15 @@ public class DataRetriever {
             model.setEventMaleFatherSide(eventMaleFamilySide);
             model.setEventFemaleFatherSide(eventFemaleFamilySide);
 
+    /*        Log.i("FAMILY_TEST", "SHOWING FATHER SIDE EVENTS");
+            printSetsTest();
+
+            Set<String> teste = model.getEventFatherSide();
+            Log.i("FAMILY_TEST", "TESTING EVENT ON FATHER SIDE FROM MODEL");
+            for(String string : teste){
+                Log.i("FAMILY_TEST", model.getEvents().get(string).toStringTMP());
+            }
+*/
             Log.i(TAG, "createFatherMotherSide(): both sides have been successfully created, returning...");
             return null;
         }
@@ -217,9 +242,6 @@ public class DataRetriever {
         }
 
         // Add events to family side + Male/Female family side
-        /*
-        WRONG : WE DON'T NEED TO CHECK EVERYTIME FOR GENDRE WE ALREADY KNOW IT FROM'
-            DO AN IF AND THEN ADD TEH WHOLE SET TO THE CORRECT SET (LIKE APPEND OR SOME SOMETHIGN) */
         Set<String> eventIds = model.getPersonEvents(personID);
         for(String eventId : eventIds){
             eventFamilySide.add(eventId);
@@ -231,7 +253,6 @@ public class DataRetriever {
             }
         }
 
-
         // Mother side:
         createFamilySide(model.getPeople().get(personID).getMotherId());
 
@@ -239,6 +260,12 @@ public class DataRetriever {
         createFamilySide(model.getPeople().get(personID).getFatherId());
 
 
+    }
+
+    public void printSetsTest(){
+        for(String personId : eventFamilySide){
+            Log.i("FAMILY_TEST", model.getEvents().get(personId).toStringTMP());
+        }
     }
 
 

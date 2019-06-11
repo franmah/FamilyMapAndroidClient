@@ -177,8 +177,6 @@ public class MainMapFragment extends Fragment {
         if(mapEvents == null) {
             return; // No events to show because of Filters.
         }
-
-
         for(String eventId : mapEvents){
             Event event = allEvents.get(eventId);
 
@@ -244,7 +242,7 @@ public class MainMapFragment extends Fragment {
 
     private void drawLines(Event centralEvent){
 
-        if(eventMarkers == null){
+        if(eventMarkers == null || eventMarkers.size() == 0){
             return;
         }
 

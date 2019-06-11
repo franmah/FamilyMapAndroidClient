@@ -78,7 +78,7 @@ public class loginFragment extends Fragment implements LoginUserTask.LoginUserLi
 
         /*** FOR TESTING PURPOSES ***/
         /*** REMOVE WHEN DONE ***/
-        mHostNameText.setText("192.168.1.11");
+        mHostNameText.setText("192.168.253.166");
         mPortNumberText.setText("8080");
         mUserNameText.setText("user");
         mPasswordText.setText("pass");

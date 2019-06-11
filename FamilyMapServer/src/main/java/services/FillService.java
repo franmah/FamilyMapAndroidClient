@@ -329,7 +329,7 @@ public class FillService{
             first_name = female_names.getData()[Math.abs(rand.nextInt() % female_names.getData().length)];
         }
         else{
-            first_name = female_names.getData()[Math.abs(rand.nextInt() % males_names.getData().length)];
+            first_name = males_names.getData()[Math.abs(rand.nextInt() % males_names.getData().length)];
         }
 
         return new Person(user_name, first_name, last_name, gender);

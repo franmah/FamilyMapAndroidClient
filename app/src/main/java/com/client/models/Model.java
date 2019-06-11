@@ -1,10 +1,14 @@
 package com.client.models;
 
+import android.util.Log;
+
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+
 public class Model {
+    private final String TAG = "Model";
 
     private static Model instance = null;
 
@@ -24,6 +28,8 @@ public class Model {
 
     private Map<String, Person> people = null;
     private Map<String, Event> events = null; // Contain all events
+
+    private Set<String> userEvents = null;
 
     private Set<String> maleEvents = null;
     private Set<String> femaleEvents = null;
@@ -54,6 +60,9 @@ public class Model {
 
     /** Filled when a user click on a marker on the map. Used to draw the polylines */
     public Set<String> getPersonEvents(String personId){
+        // TODO: need to return a list of ordered events according to the date
+        // Collections.sort(theList, Comparator.comparing(theObject::getCustomerCount));
+        // would need the full object though.
         Set<String> currentEvents = getCurrentEvents();
         Set<String> result = new HashSet<>();
         for(String eventId : currentEvents){
@@ -70,53 +79,59 @@ public class Model {
 
     public Set<String> getCurrentEvents(){
 
-        String fatherSide = eventTypes.get("Father's Side");
-        String motherSide = eventTypes.get("Mother's Side");
-        String maleOnly = eventTypes.get("Male");
-        String femaleOnly = eventTypes.get("Female");
+        try {
+            String fatherSide = eventTypes.get("Father's Side");
+            String motherSide = eventTypes.get("Mother's Side");
+            String maleOnly = eventTypes.get("Male");
+            String femaleOnly = eventTypes.get("Female");
 
-        if(maleOnly.equals("f") && femaleOnly.equals("f")){
+            if (maleOnly.equals("f") && femaleOnly.equals("f")) {
+                return null;
+            }
+            else if (fatherSide.equals("f") && motherSide.equals("f")) {
+                return userEvents;
+            }
+            else if (fatherSide.equals("t") && motherSide.equals("t") &&
+                    maleOnly.equals("t") && femaleOnly.equals("t")) {
+                return events.keySet();
+            }
+            else if (fatherSide.equals("f") && motherSide.equals("t")) {
+                if (maleOnly.equals("t") && femaleOnly.equals("t")) {
+                    return eventFatherSide;
+                }
+                else if (maleOnly.equals("t")) {
+                    return eventMaleFatherSide;
+                }
+                else {
+                    return eventFemaleFatherSide;
+                }
+            }
+            else if (fatherSide.equals("t") && motherSide.equals("f")) {
+                if (maleOnly.equals("t") && femaleOnly.equals("t")) {
+                    return eventMotherSide;
+                }
+                else if (maleOnly.equals("t")) {
+                    return eventMaleMotherSide;
+                }
+                else {
+                    return eventFemaleMotherSide;
+                }
+            }
+            else if (fatherSide.equals("t") && motherSide.equals("t")) {
+                if (maleOnly.equals("t") && femaleOnly.equals("f")) {
+                    return maleEvents;
+                }
+                else if (femaleOnly.equals("t") && maleOnly.equals("f")) {
+                    return femaleEvents;
+                }
+            }
             return null;
         }
-        else if(fatherSide.equals("f") && motherSide.equals("f")){
-            return getPersonEvents(userPersonId);
+        catch (NullPointerException e){
+            Log.e(TAG, "Error: " + e.toString());
+            e.printStackTrace();
+            return null;
         }
-        else if (fatherSide.equals("t") && motherSide.equals("t") &&
-                maleOnly.equals("t") && femaleOnly.equals("t")){
-            return events.keySet();
-        }
-        else if(fatherSide.equals("f") && motherSide.equals("t")){
-            if(maleOnly.equals("t") && femaleOnly.equals("t")){
-                return eventMotherSide;
-            }
-            else if(maleOnly.equals("t")){
-                return eventMaleMotherSide;
-            }
-            else{
-                return eventFemaleMotherSide;
-            }
-        }
-        else if(fatherSide.equals("t") && motherSide.equals("f")){
-            if(maleOnly.equals("t") && femaleOnly.equals("t")){
-                return eventFatherSide;
-            }
-            else if(maleOnly.equals("t")){
-                return eventMaleFatherSide;
-            }
-            else{
-                return eventFemaleFatherSide;
-            }
-        }
-        else if(fatherSide.equals("t") && motherSide.equals("t")){
-            if(maleOnly.equals("t") && femaleOnly.equals("f")){
-                return maleEvents;
-            }
-            else if(femaleOnly.equals("t") && maleOnly.equals("f")){
-                return femaleEvents;
-            }
-        }
-        return null;
-
     }
 
     /** GETTERS AND SETTERS **/
@@ -290,6 +305,14 @@ public class Model {
 
     public void setPersonFemaleFatherSide(Set<String> peronsFemaleFatherSide) {
         this.personFemaleFatherSide = peronsFemaleFatherSide;
+    }
+
+    public Set<String> getUserEvents() {
+        return userEvents;
+    }
+
+    public void setUserEvents(Set<String> userEvents) {
+        this.userEvents = userEvents;
     }
 }
 

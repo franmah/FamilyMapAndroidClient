@@ -115,9 +115,4 @@ public class FilterActivity extends AppCompatActivity {
         }
     }
 
-
-    // TODO: - basics: view, xml... - get the recycler view going
-    // TODO: - set up the filter (in Model, or create a Filter/Option... model)
-    // TODO: - get the toolbar with the arrow
-    // TODO: - reupdate the map (call onResume in the map)
 }
