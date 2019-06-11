@@ -6,7 +6,7 @@ import java.util.UUID;
 /**
  * Holds info for event objects.
  */
-public class Event{
+public class Event {
 
     private String eventID = null;
     private String associatedUsername = null;

@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.client.models.Model;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
@@ -18,40 +19,39 @@ public class MainActivity extends AppCompatActivity{
     private final String TAG = "MainActivity";
     private final int ERROR_DIALOG_REQUEST = 9001;
 
+    private FragmentManager fragmentManager = getSupportFragmentManager();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
+        if(!isGoogleServicesOK()){
+            Log.e(TAG, "Google services unavailable");
+            return;
+        }
+
+        getFragment();
+    }
+
+    public void getFragment(){
+        Log.i(TAG, "getting fragment");
         Fragment fragment = fragmentManager.findFragmentById(R.id.main_activity_fragment_container);
-        if(fragment == null){
-            fragment = new loginFragment();
+        if(fragment == null) {
+            if (!Model.getInstance().isUserLoggedIn()) {
+                fragment = new loginFragment();
+            } else {
+                fragment = new MainMapFragment();
+            }
             fragmentManager.beginTransaction().add(R.id.main_activity_fragment_container, fragment).commit();
         }
         else{
-            fragment = new loginFragment();
-            fragmentManager.beginTransaction().replace(R.id.main_activity_fragment_container, fragment).commit();
-        }
-    }
-
-    public void TestCallFilterActivity(){
-        Intent intent = new Intent(this, FilterActivity.class);
-        startActivity(intent);
-    }
-
-    public void switchToMapFragment(){
-        if(isGoogleServicesOK()) {
-            Log.i(TAG, "switchToMapFragment: google services checked!");
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            Fragment fragment = fragmentManager.findFragmentById(R.id.main_activity_fragment_container);
-            if (fragment == null) {
-                fragment = new MainMapFragment();
-                fragmentManager.beginTransaction().add(R.id.main_activity_fragment_container, fragment).commit();
+            if (!Model.getInstance().isUserLoggedIn()) {
+                fragment = new loginFragment();
             } else {
                 fragment = new MainMapFragment();
-                fragmentManager.beginTransaction().replace(R.id.main_activity_fragment_container, fragment).commit();
             }
+            fragmentManager.beginTransaction().replace(R.id.main_activity_fragment_container, fragment).commit();
         }
     }
 
@@ -75,4 +75,10 @@ public class MainActivity extends AppCompatActivity{
         return false;
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        getFragment();
+    }
 }

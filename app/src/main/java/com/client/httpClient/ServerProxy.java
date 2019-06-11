@@ -225,7 +225,6 @@ public class ServerProxy {
         }
     }
 
-
     private static String readFromStream(InputStream is) throws IOException {
         StringBuilder sb = new StringBuilder();
         InputStreamReader sr = new InputStreamReader(is);

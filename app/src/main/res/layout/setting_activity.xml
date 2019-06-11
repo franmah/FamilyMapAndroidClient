@@ -3,92 +3,94 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="20dp">
 
     <!-- Life story lines -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_weight="1">
+        android:paddingBottom="10dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:id="@+id/life_story_upper_text"
-            android:layout_weight="1">
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TEST"
-                android:id="@+id/life_story_lower_text"/>
+                android:text="@string/life_story_upper_text"
+                android:id="@+id/life_story_upper_text_view"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TEST"/>
+                android:id="@+id/life_story_lower_text_view"
+                android:text="@string/life_story_lower_text"
+                android:paddingBottom="10dp"/>
 
         </LinearLayout>
 
         <Spinner
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/life_story_color_spinner"
-            android:layout_weight="0">
+            android:id="@+id/life_story_spinner">
 
         </Spinner>
 
         <Switch
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0"
             android:checked="true"
             android:id="@+id/life_story_switch"
             />
 
+
+
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"/>
 
     <!-- Family Tree lines -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_weight="1">
+        android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_weight="1">
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/family_tree_upper_text"
-                android:text="TEST"/>
+                android:id="@+id/family_tree_upper_text_view"
+                android:text="@string/family_tree_upper_text"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/family_tree_lower_text"
-                android:text="TEST"/>
+                android:id="@+id/family_tree_lower_text_view"
+                android:text="@string/family_tree_lower_text"/>
 
         </LinearLayout>
 
         <Spinner
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/family_tree_spinner"
-            android:layout_weight="0">
+            android:id="@+id/family_tree_spinner">
 
         </Spinner>
 
         <Switch
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0"
             android:checked="true"
             android:id="@+id/family_tree_switch"
             />
@@ -99,41 +101,37 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_weight="1">
+        android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_weight="1">
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/spouse_lines_upper_text"
-                android:text="TEST"/>
+                android:id="@+id/spouse_lines_upper_text_view"
+                android:text="@string/spouse_lines_upper_text"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/spouse_lines_lower_text"
-                android:text="TEST"/>
+                android:id="@+id/spouse_lines_lower_text_view"
+                android:text="@string/spouse_lines_lower_text"/>
 
         </LinearLayout>
 
         <Spinner
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/spouse_lines_spinner"
-            android:layout_weight="0">
+            android:id="@+id/spouse_lines_spinner">
 
         </Spinner>
 
         <Switch
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0"
             android:checked="true"
             android:id="@+id/spouse_lines_switch"
             />
@@ -144,38 +142,78 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_weight="1">
+        android:orientation="horizontal">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_weight="1">
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/map_type_upper_text"
-                android:text="TEST"/>
+                android:id="@+id/map_type_upper_text_view"
+                android:text="@string/map_type_upper_text"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/map_type_lower_text"
-                android:text="TEST"/>
+                android:id="@+id/map_type_lower_text_view"
+                android:text="@string/map_type_lower_text"/>
 
         </LinearLayout>
 
         <Spinner
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/map_type_spinner"
-            android:layout_weight="0">
+            android:id="@+id/map_type_spinner">
 
         </Spinner>
 
     </LinearLayout>
+
+    <!-- Re-sync data -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/resync_data_layout">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/resync_data_upper_text_view"
+                android:text="@string/resync_data_upper_text"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/resync_data_lower_text_view"
+                android:text="@string/resync_data_lower_text"/>
+
+    </LinearLayout>
+
+    <!-- Logout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/logout_layout">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/logout_upper_text_view"
+            android:text="@string/logout_upper_text"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/logout_lower_text_view"
+            android:text="@string/logout_lower_text"/>
+
+    </LinearLayout>
+
 
 
 

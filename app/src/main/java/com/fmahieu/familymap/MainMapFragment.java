@@ -43,6 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedSet;
 
 public class MainMapFragment extends Fragment {
     private final String TAG = "MainMapFragment";
@@ -52,12 +53,16 @@ public class MainMapFragment extends Fragment {
     private TextView mEventInfo;
 
     private GoogleMap map;
+
     private Model model = Model.getInstance();
 
     private List<Polyline> lines = new ArrayList<>();
-    private Map<Marker, Event> eventMarkers = new HashMap<>();
+    private Map<Marker, Event> eventMarkers = new HashMap<>(); // Events to show according to filters
+
     private Map<String, String> eventTypes = model.getEventTypes();
     private Map<String, Event>  allEvents = model.getEvents();
+
+    private final int BASE_LINE_WIDTH = 10;
 
     private final float ZOOM_LEVEL = 5;
 
@@ -91,6 +96,7 @@ public class MainMapFragment extends Fragment {
             @Override
             public void onMapReady(GoogleMap googleMap) {
                 map = googleMap;
+                map.setMapType(model.getMapTypeId());
 
                 Log.i(TAG, "map found, drawing events...");
                 initMap();
@@ -121,6 +127,7 @@ public class MainMapFragment extends Fragment {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Intent intent;
         switch(item.getItemId()){
             case R.id.search_item:
                 // call the search activity
@@ -128,13 +135,13 @@ public class MainMapFragment extends Fragment {
             case R.id.filter_item:
                 // call filter activity
                 Log.i(TAG, "onOptionsItemSelected(): Starting FilterActivity");
-                Intent intent = new Intent(getActivity(), FilterActivity.class);
+                intent = new Intent(getActivity(), FilterActivity.class);
                 startActivity(intent);
-
-                // need to implement on resume to update the map.
                 return true;
             case R.id.settings_item:
-                // call settings activity
+                Log.i(TAG, "onOptionsItemSelected(): Starting SettingActivity");
+                intent = new Intent(getActivity(), SettingActivity.class);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -240,7 +247,7 @@ public class MainMapFragment extends Fragment {
         Log.i(TAG, "centerAndZoomMap(): camera has been updated");
     }
 
-    private void drawLines(Event centralEvent){
+    private void drawLines(Event clickedEvent){
 
         if(eventMarkers == null || eventMarkers.size() == 0){
             return;
@@ -253,25 +260,110 @@ public class MainMapFragment extends Fragment {
         }
         lines.clear();
 
-        Log.i(TAG, "drawing new lines for event: " + centralEvent.getEventId());
-        Set<String> personEvents = model.getPersonEvents(centralEvent.getPersonId());
-
-        for(String eventId : personEvents){
-            Event event = allEvents.get(eventId);
-
-            if(model.getEventTypes().get(event.getEventType()).equals("t")) {
-
-                Polyline line = map.addPolyline(new PolylineOptions().add(
-                        new LatLng(centralEvent.getLatitude(), centralEvent.getLongitude()),
-                        new LatLng(event.getLatitude(), event.getLongitude()))
-                        .width(5)
-                        .color(Color.RED));
-                lines.add(line);
-            }
-        }
+        drawLifeStoryLines(clickedEvent);
+        drawSpouseLines(clickedEvent);
+        drawFamilyLines(clickedEvent);
 
         Log.i(TAG, "drawLines(): lines have been drawn");
     }
+
+    private void drawLifeStoryLines(Event clickedEvent){
+        Log.i(TAG, "draLifeStoryLines(): drawing new lines for event: " + clickedEvent.getEventId());
+
+        if(!model.isLifeStoryLineOn()){
+            Log.i("TESTING", "LINE NOT SHOWING");
+            return;
+        }
+
+        List<String> personEvents = model.getPersonEvents(clickedEvent.getPersonId());
+
+        int lineColor = model.getLifeStoryColorId();
+
+        for(String eventId : personEvents){
+            String eventType = allEvents.get(eventId).getEventType();
+
+            if(model.getEventTypes().get(eventType).equals("t")) {
+
+                Polyline line = map.addPolyline(new PolylineOptions().add(
+                        new LatLng(clickedEvent.getLatitude(), clickedEvent.getLongitude()),
+                        new LatLng(allEvents.get(eventId).getLatitude(), allEvents.get(eventId).getLongitude()))
+                        .width(BASE_LINE_WIDTH)
+                        .color(lineColor));
+                lines.add(line);
+            }
+        }
+    }
+
+    private void drawSpouseLines(Event clickedEvent){
+        if(!model.isSpouseLineOn()){
+            return;
+        }
+
+        String spouseId = model.getPeople().get(clickedEvent.getPersonId()).getSpouseId();
+        int lineColor = model.getSpouseLineColorId();
+
+        drawUniqueLineToPersonEvent(spouseId, clickedEvent, lineColor, BASE_LINE_WIDTH);
+
+    }
+
+    private void drawFamilyLines(Event clickedEvent){
+        if(!model.isFamilyTreeLineOn()){
+            return;
+        }
+
+        int lineColor = model.getFamilyTreeColorId();
+        drawFamilyLinesHelper(clickedEvent.getPersonId(), clickedEvent, lineColor, BASE_LINE_WIDTH);
+    }
+
+    private void drawFamilyLinesHelper(String personId, Event baseEvent, int lineColor, int lineWidth){
+        assert personId != null;
+
+        Log.i(TAG, "drawFamilyLineHelper(): drawing lines for the next generation");
+
+        if(lineWidth < 1){
+            lineWidth = 1;
+        }
+
+        Person person = model.getPeople().get(personId);
+
+        if(person.getMotherId() != null){
+            Event newBaseEvent = drawUniqueLineToPersonEvent(person.getMotherId(), baseEvent, lineColor, lineWidth);
+            if(newBaseEvent != null){
+                drawFamilyLinesHelper(person.getMotherId(), newBaseEvent, lineColor, lineWidth - 2);
+            }
+        }
+
+        if(person.getFatherId() != null){
+            Event newBaseEvent = drawUniqueLineToPersonEvent(person.getFatherId(), baseEvent, lineColor, lineWidth);
+            if(newBaseEvent != null){
+                drawFamilyLinesHelper(person.getFatherId(), newBaseEvent, lineColor, lineWidth - 2);
+            }
+        }
+
+    }
+
+    private Event drawUniqueLineToPersonEvent(String personId, Event childEvent, int lineColor, int lineWidth){
+
+        List<String> personEvents = model.getPersonEvents(personId);
+
+        for(String eventId : personEvents) {
+            String eventType = allEvents.get(eventId).getEventType();
+
+            if (model.getEventTypes().get(eventType).equals("t")) {
+                Event event = allEvents.get(eventId);
+                Polyline line = map.addPolyline(new PolylineOptions().add(
+                        new LatLng(childEvent.getLatitude(), childEvent.getLongitude()),
+                        new LatLng(event.getLatitude(), event.getLongitude()))
+                        .width(lineWidth)
+                        .color(lineColor));
+                lines.add(line);
+
+                return event;
+            }
+        }
+        return null;
+    }
+
 
     @Override
     public void onResume() {
@@ -281,29 +373,3 @@ public class MainMapFragment extends Fragment {
 }
 
 
-
-/* FUTURE CODE FOR CALLING THE FRAGMENT FROM AN ACTIVITY
-
-       private static final String ATG_EVENT_ID = "event_id_call";
-
-       public static MainMapFragment newInstance(String eventId){
-            Bundle args = new Bundle();
-            args.putCharSequence(ARG_EVENT_ID, eventId);
-            MainMapFragment fragment = new MainMapFragment();
-            // Should it be new MainMapFragment(String eventId), and then have a constructor ?
-            // Doesn't need it if the onCreateInitialize the string
-            // Test it without using the Bundle/argument, just a constructor that set the event_id
-            return fragment;
-       }
-
-       in the activity calling it:
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentById(R.id.fragment_container);
-        // The layout/container which will hold the fragment
-
-        if(fragment == null)
-            fragment = MainMapFragment.newInstance(the event);
-            fragmentManager.beginTransaction().add(R.id.fragment_container, fragment).commit();
-        }
-
-     */

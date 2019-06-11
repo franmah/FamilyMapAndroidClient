@@ -10,6 +10,7 @@ import com.client.response.PersonAllResponse;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -226,6 +227,8 @@ public class DataRetriever {
             return;
         }
 
+        // TODO: father/mother side always return the father side
+
         boolean isMale = true;
         if(people.get(personID).getGender().equals("f")){
             isMale = false;
@@ -242,7 +245,7 @@ public class DataRetriever {
         }
 
         // Add events to family side + Male/Female family side
-        Set<String> eventIds = model.getPersonEvents(personID);
+        List<String> eventIds = model.getPersonEvents(personID);
         for(String eventId : eventIds){
             eventFamilySide.add(eventId);
             if(isMale){
@@ -262,11 +265,6 @@ public class DataRetriever {
 
     }
 
-    public void printSetsTest(){
-        for(String personId : eventFamilySide){
-            Log.i("FAMILY_TEST", model.getEvents().get(personId).toStringTMP());
-        }
-    }
 
 
 

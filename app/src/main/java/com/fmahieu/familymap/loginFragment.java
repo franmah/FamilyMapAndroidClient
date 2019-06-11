@@ -21,17 +21,14 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
-import com.client.Tasks.LoginUserTask;
 import com.client.httpClient.ServerProxy;
 import com.client.models.Model;
 import com.client.request.LoginRequest;
 import com.client.request.RegisterRequest;
 import com.client.response.ConnectionResponse;
 import com.client.service.DataRetriever;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GoogleApiAvailability;
 
-public class loginFragment extends Fragment implements LoginUserTask.LoginUserListener {
+public class loginFragment extends Fragment {
 
     private final String TAG = "LoginFragment";
 
@@ -78,7 +75,7 @@ public class loginFragment extends Fragment implements LoginUserTask.LoginUserLi
 
         /*** FOR TESTING PURPOSES ***/
         /*** REMOVE WHEN DONE ***/
-        mHostNameText.setText("192.168.253.166");
+        mHostNameText.setText("192.168.1.9");
         mPortNumberText.setText("8080");
         mUserNameText.setText("user");
         mPasswordText.setText("pass");
@@ -89,26 +86,6 @@ public class loginFragment extends Fragment implements LoginUserTask.LoginUserLi
 
 
         return view;
-    }
-        /*** CORRECT METHOD TO USE TASK ***/
-    private void callLoginUserTask(){
-        new LoginUserTask(this).execute();
-    }
-
-    @Override
-    public void loginResponse(String response, boolean isErrorMessage){
-        if(isErrorMessage){
-            makeToast(response);
-        }
-        else{
-            makeToast(response);
-
-            // Change fragment to MainMapFragment
-            Activity mainActivityInstance = getActivity();
-            if(mainActivityInstance instanceof MainActivity) {
-                ((MainActivity) mainActivityInstance).switchToMapFragment();
-            }
-        }
     }
 
     /*** LESS CORRECT METHOD BUT WORKING ***/
@@ -197,10 +174,13 @@ public class loginFragment extends Fragment implements LoginUserTask.LoginUserLi
             else {
                 Log.i(TAG, "in RetrieveData, response from DataRetriever came back null, data has been successfully loaded");
 
+                // Update model:
+                Model.getInstance().setUserLoggedIn(true);
+
                 // Change fragment to GoogleMapFragmentNOT_USED
                 Activity mainActivityInstance = getActivity();
                 if(mainActivityInstance instanceof MainActivity) {
-                    ((MainActivity) mainActivityInstance).switchToMapFragment();
+                    ((MainActivity) mainActivityInstance).getFragment();
                 }
 
             }
@@ -362,8 +342,8 @@ public class loginFragment extends Fragment implements LoginUserTask.LoginUserLi
             @Override
             public void onClick(View v){
                 Log.i(TAG, "Login button pressed, moving to http proxy...");
-                //callLoginUserTask(); // check in the book for the getActivity.this call
-                // Doesn't work, the app stop, ask teacher
+                Model.getInstance().setHostName(mHostNameText.getText().toString());
+                Model.getInstance().setPortNumber(mPortNumberText.getText().toString());
                 new LoginUser().execute();
             }
         });
@@ -372,6 +352,8 @@ public class loginFragment extends Fragment implements LoginUserTask.LoginUserLi
             @Override
             public void onClick(View v){
                 Log.i(TAG, "Register button pressed, moving to http proxy...");
+                Model.getInstance().setHostName(mHostNameText.getText().toString());
+                Model.getInstance().setPortNumber(mPortNumberText.getText().toString());
                 new RegisterUser().execute();
             }
         });

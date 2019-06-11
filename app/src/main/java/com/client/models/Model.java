@@ -1,10 +1,17 @@
 package com.client.models;
 
+import android.graphics.Color;
 import android.util.Log;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_HYBRID;
+import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL;
+import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_SATELLITE;
+import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_TERRAIN;
 
 
 public class Model {
@@ -22,9 +29,11 @@ public class Model {
     private Model(){
     }
 
+    private String hostName = null;
+    private String portNumber = null;
+
     private String userToken = null;
     private String userPersonId = null;
-
 
     private Map<String, Person> people = null;
     private Map<String, Event> events = null; // Contain all events
@@ -58,18 +67,29 @@ public class Model {
     /** Store Filter preferences **/
     private Map<String, String> eventTypes = null; // Map<EventId, "t" or "f">
 
-    /** Filled when a user click on a marker on the map. Used to draw the polylines */
-    public Set<String> getPersonEvents(String personId){
-        // TODO: need to return a list of ordered events according to the date
-        // Collections.sort(theList, Comparator.comparing(theObject::getCustomerCount));
-        // would need the full object though.
+    /** Get the events of a person's life, events are taken from the set currently used (defined by filters)
+     */
+    public List<String> getPersonEvents(String personId){
         Set<String> currentEvents = getCurrentEvents();
-        Set<String> result = new HashSet<>();
+
+        List<String> result = new ArrayList<>();
         for(String eventId : currentEvents){
             if(events.get(eventId).getPersonId().equals(personId)){
                 result.add(eventId);
             }
         }
+        // Sort List:
+        int personEventsSize = result.size();
+        for(int i = 0; i < personEventsSize; i++){
+            for(int j = i; j < personEventsSize; j++){
+                if(events.get(result.get(i)).getYear() > events.get(result.get(j)).getYear()){
+                    String tmp = result.get(i);
+                    result.set(i, result.get(j));
+                    result.set(j, tmp);
+                }
+            }
+        }
+
         return result;
     }
 
@@ -132,6 +152,106 @@ public class Model {
             e.printStackTrace();
             return null;
         }
+    }
+
+    /** SETTINGS  LINES**/
+    private final int BLUE = 0, RED = 1, GREEN = 2; // Numbers come from the string-array color in "strings.xml"
+    private int lifeStoryColor = BLUE;
+    private int familyTreeColor = RED;
+    private int spouseLineColor = GREEN;
+
+    private boolean isLifeStoryLineOn = true;
+    private boolean isFamilyTreeLineOn = true;
+    private boolean isSpouseLineOn = true;
+
+
+    /** Called by the color setters. Set colors to their id
+     *
+     * @param colorPos
+     * @return
+     */
+    public int getLineColorId(int colorPos){
+        switch(colorPos){
+            case BLUE:
+                return Color.BLUE;
+            case RED:
+                return Color.RED;
+            case GREEN:
+                return Color.GREEN;
+            default:
+                return 0;
+        }
+    }
+
+    public int getLifeStoryColorPos() { return lifeStoryColor; } // Return the position of the color in the color array
+    public int getLifeStoryColorId() { return getLineColorId(getLifeStoryColorPos());} // return the id of the color (the actual color to show, not its name)
+    public void setLifeStoryColor(int lifeStoryColor) { this.lifeStoryColor = lifeStoryColor; }
+
+    public int getFamilyTreeColorPos() { return familyTreeColor; }
+    public int getFamilyTreeColorId() { return getLineColorId(getFamilyTreeColorPos()); }
+    public void setFamilyTreeColor(int familyTreeColor) { this.familyTreeColor = familyTreeColor; }
+
+    public int getSpouseLineColorPos() { return spouseLineColor; }
+    public int getSpouseLineColorId(){ return getLineColorId(getSpouseLineColorPos()); }
+    public void setSpouseLineColor(int spouseLineColor) { this.spouseLineColor = spouseLineColor; }
+
+    public boolean isLifeStoryLineOn() { return isLifeStoryLineOn; }
+    public void setLifeStoryLineOn(boolean lifeStoryLineOn) { isLifeStoryLineOn = lifeStoryLineOn; }
+
+    public boolean isFamilyTreeLineOn() { return isFamilyTreeLineOn; }
+    public void setFamilyTreeLineOn(boolean familyTreeLineOn) { isFamilyTreeLineOn = familyTreeLineOn; }
+
+    public boolean isSpouseLineOn() { return isSpouseLineOn; }
+    public void setSpouseLineOn(boolean spouseLineOn) { isSpouseLineOn = spouseLineOn; }
+
+    /** SETTINGS MAP TYPE **/
+    private int[] mapTypes = {MAP_TYPE_NORMAL, MAP_TYPE_HYBRID, MAP_TYPE_SATELLITE, MAP_TYPE_TERRAIN};
+    // the order comes from the items listed in "string.xml" map_type_array
+    private int mapType = 0;
+
+    public int getMapTypePos() { return mapType; }
+    public int getMapTypeId(){ return mapTypes[getMapTypePos()]; }
+    public void setMapTypePos(int position){ mapType = position; }
+
+    /** SETTING RE-SYNC & LOGOUT **/
+    private boolean isUserLoggedIn = false;
+
+    public boolean isUserLoggedIn() { return isUserLoggedIn; }
+    public void setUserLoggedIn(boolean userLoggedIn) { isUserLoggedIn = userLoggedIn; }
+
+    public void clearFamilyData(){
+        setPeople(null);
+        setEvents(null);
+        setUserToken(null);
+
+        setMaleEvents(null);
+        setFemaleEvents(null);
+
+        setEventMotherSide(null);
+        setEventFatherSide(null);
+        setEventMaleMotherSide(null);
+        setEventFemaleMotherSide(null);
+        setEventMaleFatherSide(null);
+        setEventFemaleFatherSide(null);
+
+        setMalePeople(null);
+        setFemalePeople(null);
+
+        setPersonMotherSide(null);
+        setPersonFatherSide(null);
+        setPersonMaleMotherSide(null);
+        setPersonFemaleMotherSide(null);
+        setPersonMaleFatherSide(null);
+        setPersonFemaleFatherSide(null);
+    }
+
+    /** Clear family data and reset settings & filters
+     *
+     */
+    public void resetModelToDefault(){
+        // set the instance to a new one, the previous data is not accessible
+        instance = new Model();
+        setUserLoggedIn(false);
     }
 
     /** GETTERS AND SETTERS **/
@@ -313,6 +433,22 @@ public class Model {
 
     public void setUserEvents(Set<String> userEvents) {
         this.userEvents = userEvents;
+    }
+
+    public String getHostName() {
+        return hostName;
+    }
+
+    public void setHostName(String hostName) {
+        this.hostName = hostName;
+    }
+
+    public String getPortNumber() {
+        return portNumber;
+    }
+
+    public void setPortNumber(String portNumber) {
+        this.portNumber = portNumber;
     }
 }
 
