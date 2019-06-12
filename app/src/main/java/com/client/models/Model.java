@@ -4,6 +4,8 @@ import android.graphics.Color;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -70,7 +72,7 @@ public class Model {
     /** Get the events of a person's life, events are taken from the set currently used (defined by filters)
      */
     public List<String> getPersonEvents(String personId){
-        Set<String> currentEvents = getCurrentEvents();
+        Set<String> currentEvents = getEvents().keySet();
 
         List<String> result = new ArrayList<>();
         for(String eventId : currentEvents){
@@ -98,12 +100,12 @@ public class Model {
     }
 
     public Set<String> getCurrentEvents(){
-
         try {
             String fatherSide = eventTypes.get("Father's Side");
             String motherSide = eventTypes.get("Mother's Side");
             String maleOnly = eventTypes.get("Male");
             String femaleOnly = eventTypes.get("Female");
+
 
             if (maleOnly.equals("f") && femaleOnly.equals("f")) {
                 return null;
@@ -117,17 +119,6 @@ public class Model {
             }
             else if (fatherSide.equals("f") && motherSide.equals("t")) {
                 if (maleOnly.equals("t") && femaleOnly.equals("t")) {
-                    return eventFatherSide;
-                }
-                else if (maleOnly.equals("t")) {
-                    return eventMaleFatherSide;
-                }
-                else {
-                    return eventFemaleFatherSide;
-                }
-            }
-            else if (fatherSide.equals("t") && motherSide.equals("f")) {
-                if (maleOnly.equals("t") && femaleOnly.equals("t")) {
                     return eventMotherSide;
                 }
                 else if (maleOnly.equals("t")) {
@@ -135,6 +126,17 @@ public class Model {
                 }
                 else {
                     return eventFemaleMotherSide;
+                }
+            }
+            else if (fatherSide.equals("t") && motherSide.equals("f")) {
+                if (maleOnly.equals("t") && femaleOnly.equals("t")) {
+                    return eventFatherSide;
+                }
+                else if (maleOnly.equals("t")) {
+                    return eventMaleFatherSide;
+                }
+                else {
+                    return eventFemaleFatherSide;
                 }
             }
             else if (fatherSide.equals("t") && motherSide.equals("t")) {
@@ -219,32 +221,6 @@ public class Model {
     public boolean isUserLoggedIn() { return isUserLoggedIn; }
     public void setUserLoggedIn(boolean userLoggedIn) { isUserLoggedIn = userLoggedIn; }
 
-    public void clearFamilyData(){
-        setPeople(null);
-        setEvents(null);
-        setUserToken(null);
-
-        setMaleEvents(null);
-        setFemaleEvents(null);
-
-        setEventMotherSide(null);
-        setEventFatherSide(null);
-        setEventMaleMotherSide(null);
-        setEventFemaleMotherSide(null);
-        setEventMaleFatherSide(null);
-        setEventFemaleFatherSide(null);
-
-        setMalePeople(null);
-        setFemalePeople(null);
-
-        setPersonMotherSide(null);
-        setPersonFatherSide(null);
-        setPersonMaleMotherSide(null);
-        setPersonFemaleMotherSide(null);
-        setPersonMaleFatherSide(null);
-        setPersonFemaleFatherSide(null);
-    }
-
     /** Clear family data and reset settings & filters
      *
      */
@@ -280,7 +256,7 @@ public class Model {
     }
 
     public void setEventTypes(Map<String, String> eventTypes) {
-        this.eventTypes = eventTypes;
+        this.eventTypes = new HashMap<>(eventTypes);
     }
 
     public Map<String, Person> getPeople() {
@@ -288,7 +264,7 @@ public class Model {
     }
 
     public void setPeople(Map<String, Person> people) {
-        this.people = people;
+        this.people = new HashMap<>(people);
     }
 
     public Map<String, Event> getEvents() {
@@ -296,7 +272,7 @@ public class Model {
     }
 
     public void setEvents(Map<String, Event> events) {
-        this.events = events;
+        this.events = new HashMap<>(events);
     }
 
     public Set<String> getMaleEvents() {
@@ -304,7 +280,7 @@ public class Model {
     }
 
     public void setMaleEvents(Set<String> maleEvents) {
-        this.maleEvents = maleEvents;
+        this.maleEvents = new HashSet<>(maleEvents);
     }
 
     public Set<String> getFemaleEvents() {
@@ -312,7 +288,7 @@ public class Model {
     }
 
     public void setFemaleEvents(Set<String> femaleEvents) {
-        this.femaleEvents = femaleEvents;
+        this.femaleEvents = new HashSet<>(femaleEvents);
     }
 
     public Set<String> getMalePeople() {
@@ -320,7 +296,7 @@ public class Model {
     }
 
     public void setMalePeople(Set<String> malePeople) {
-        this.malePeople = malePeople;
+        this.malePeople = new HashSet<>(malePeople);
     }
 
     public Set<String> getFemalePeople() {
@@ -328,7 +304,7 @@ public class Model {
     }
 
     public void setFemalePeople(Set<String> femalePeople) {
-        this.femalePeople = femalePeople;
+        this.femalePeople = new HashSet<>(femalePeople);
     }
 
     public Set<String> getEventMotherSide() {
@@ -336,7 +312,7 @@ public class Model {
     }
 
     public void setEventMotherSide(Set<String> eventMotherSide) {
-        this.eventMotherSide = eventMotherSide;
+        this.eventMotherSide = new HashSet<>(eventMotherSide);
     }
 
     public Set<String> getEventFatherSide() {
@@ -344,7 +320,7 @@ public class Model {
     }
 
     public void setEventFatherSide(Set<String> eventFatherSide) {
-        this.eventFatherSide = eventFatherSide;
+        this.eventFatherSide = new HashSet<>(eventFatherSide);
     }
 
     public Set<String> getPersonMotherSide() {
@@ -352,7 +328,7 @@ public class Model {
     }
 
     public void setPersonMotherSide(Set<String> personMotherSide) {
-        this.personMotherSide = personMotherSide;
+        this.personMotherSide = new HashSet<>(personMotherSide);
     }
 
     public Set<String> getPersonFatherSide() {
@@ -360,7 +336,7 @@ public class Model {
     }
 
     public void setPersonFatherSide(Set<String> personFatherSide) {
-        this.personFatherSide = personFatherSide;
+        this.personFatherSide = new HashSet<>(personFatherSide);
     }
 
     public Set<String> getEventMaleFatherSide() {
@@ -368,7 +344,7 @@ public class Model {
     }
 
     public void setEventMaleFatherSide(Set<String> eventMaleFatherSide) {
-        this.eventMaleFatherSide = eventMaleFatherSide;
+        this.eventMaleFatherSide = new HashSet<>(eventMaleFatherSide);
     }
 
     public Set<String> getEventFemaleFatherSide() {
@@ -376,7 +352,7 @@ public class Model {
     }
 
     public void setEventFemaleFatherSide(Set<String> eventFemaleFatherSide) {
-        this.eventFemaleFatherSide = eventFemaleFatherSide;
+        this.eventFemaleFatherSide = new HashSet<>(eventFemaleFatherSide);
     }
 
     public Set<String> getEventMaleMotherSide() {
@@ -384,7 +360,7 @@ public class Model {
     }
 
     public void setEventMaleMotherSide(Set<String> eventMaleMotherSide) {
-        this.eventMaleMotherSide = eventMaleMotherSide;
+        this.eventMaleMotherSide = new HashSet<>(eventMaleMotherSide);
     }
 
     public Set<String> getEventFemaleMotherSide() {
@@ -392,7 +368,7 @@ public class Model {
     }
 
     public void setEventFemaleMotherSide(Set<String> eventFemaleMotherSide) {
-        this.eventFemaleMotherSide = eventFemaleMotherSide;
+        this.eventFemaleMotherSide = new HashSet<>(eventFemaleMotherSide);
     }
 
     public Set<String> getPersonMaleMotherSide() {
@@ -400,7 +376,7 @@ public class Model {
     }
 
     public void setPersonMaleMotherSide(Set<String> personMaleMotherSide) {
-        this.personMaleMotherSide = personMaleMotherSide;
+        this.personMaleMotherSide = new HashSet<>(personMaleMotherSide);
     }
 
     public Set<String> getPersonFemaleMotherSide() {
@@ -408,7 +384,7 @@ public class Model {
     }
 
     public void setPersonFemaleMotherSide(Set<String> personFemaleMotherSide) {
-        this.personFemaleMotherSide = personFemaleMotherSide;
+        this.personFemaleMotherSide = new HashSet<>(personFemaleMotherSide);
     }
 
     public Set<String> getPersonMaleFatherSide() {
@@ -416,7 +392,7 @@ public class Model {
     }
 
     public void setPersonMaleFatherSide(Set<String> personMaleFatherSide) {
-        this.personMaleFatherSide = personMaleFatherSide;
+        this.personMaleFatherSide = new HashSet<>(personMaleFatherSide);
     }
 
     public Set<String> getPeronsFemaleFatherSide() {
@@ -424,7 +400,7 @@ public class Model {
     }
 
     public void setPersonFemaleFatherSide(Set<String> peronsFemaleFatherSide) {
-        this.personFemaleFatherSide = peronsFemaleFatherSide;
+        this.personFemaleFatherSide = new HashSet<>(peronsFemaleFatherSide);
     }
 
     public Set<String> getUserEvents() {
@@ -432,7 +408,7 @@ public class Model {
     }
 
     public void setUserEvents(Set<String> userEvents) {
-        this.userEvents = userEvents;
+        this.userEvents = new HashSet<>(userEvents);
     }
 
     public String getHostName() {

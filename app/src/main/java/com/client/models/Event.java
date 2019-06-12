@@ -1,5 +1,7 @@
 package com.client.models;
 
+import android.view.Display;
+
 import java.util.Objects;
 import java.util.UUID;
 
@@ -69,6 +71,17 @@ public class Event {
                 ", personID='" + personID + '\'' +
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +
+                ", country='" + country + '\'' +
+                ", city='" + city + '\'' +
+                ", eventType='" + eventType + '\'' +
+                ", year=" + year +
+                '}';
+    }
+
+
+    public String toStringTMP() {
+        return "Event{" +
+                ", person= " + Model.getInstance().getPeople().get(personID).getFirstName() + " " + Model.getInstance().getPeople().get(personID).getLastName() +
                 ", country='" + country + '\'' +
                 ", city='" + city + '\'' +
                 ", eventType='" + eventType + '\'' +

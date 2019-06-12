@@ -158,7 +158,6 @@ public class SettingActivity extends AppCompatActivity implements AdapterView.On
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.resync_data_layout:
-                // create async task, which will pretty much retrieve the people.
                 new ReSyncData().execute();
                 break;
             case R.id.logout_layout:

@@ -275,21 +275,32 @@ public class MainMapFragment extends Fragment {
             return;
         }
 
+        int lineColor = model.getLifeStoryColorId();
+
         List<String> personEvents = model.getPersonEvents(clickedEvent.getPersonId());
 
-        int lineColor = model.getLifeStoryColorId();
+        Event baseEvent = null;
 
         for(String eventId : personEvents){
             String eventType = allEvents.get(eventId).getEventType();
 
-            if(model.getEventTypes().get(eventType).equals("t")) {
+            if(eventTypes.get(eventType).equals("t")) {
+                Event event = allEvents.get(eventId);
 
-                Polyline line = map.addPolyline(new PolylineOptions().add(
-                        new LatLng(clickedEvent.getLatitude(), clickedEvent.getLongitude()),
-                        new LatLng(allEvents.get(eventId).getLatitude(), allEvents.get(eventId).getLongitude()))
-                        .width(BASE_LINE_WIDTH)
-                        .color(lineColor));
-                lines.add(line);
+                if(baseEvent == null){
+                    //Event to start from
+                    baseEvent = event;
+                }
+                else {
+                    Polyline line = map.addPolyline(new PolylineOptions().add(
+                            new LatLng(baseEvent.getLatitude(), baseEvent.getLongitude()),
+                            new LatLng(event.getLatitude(), event.getLongitude()))
+                            .width(BASE_LINE_WIDTH)
+                            .color(lineColor));
+                    lines.add(line);
+
+                    baseEvent = event;
+                }
             }
         }
     }
@@ -368,6 +379,7 @@ public class MainMapFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        model = Model.getInstance();
         getMap();
     }
 }
