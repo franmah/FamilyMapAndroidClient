@@ -66,9 +66,6 @@ public class Model {
     private Set<String> personMaleFatherSide = null;
     private Set<String> personFemaleFatherSide = null;
 
-    /** Store Filter preferences **/
-    private Map<String, String> eventTypes = null; // Map<EventId, "t" or "f">
-
     /** Get the events of a person's life, events are taken from the set currently used (defined by filters)
      */
     public List<String> getPersonEvents(String personId){
@@ -94,6 +91,48 @@ public class Model {
 
         return result;
     }
+
+    /** Get the people related to the person. Store the person id and it's relationship to the person
+     * format: <personId, relationship>
+     */
+    public Map<String, String> getPersonFamily(String personId){
+        Map<String, String> familyMembers = new HashMap<>();
+
+        // find child:
+        String child = getPersonChild(personId, userPersonId, null);
+        if(child != null) { familyMembers.put(child, "Child"); }
+
+        Person person = people.get(personId);
+
+        if(person.getFatherId() != null) { familyMembers.put(person.getFatherId(), "Father"); }
+        if(person.getMotherId() != null) { familyMembers.put(person.getMotherId(), "Mother"); }
+        if(person.getSpouseId() != null) { familyMembers.put(person.getSpouseId(), "Spouse"); }
+
+        return familyMembers;
+    }
+
+    public String getPersonChild(String personId, String currentPersonId, String previousPersonId){
+        if(currentPersonId == null){
+            return null;
+        }
+
+        if(currentPersonId.equals(personId)){
+            return previousPersonId;
+        }
+
+        String childId = null;
+
+        // Search on mother side
+        childId = getPersonChild(personId, people.get(currentPersonId).getMotherId(), currentPersonId);
+        if(childId != null) { return childId; }
+
+        // Search on father side
+        return getPersonChild(personId, people.get(currentPersonId).getFatherId() , currentPersonId);
+
+    }
+
+    /** Store Filter preferences **/
+    private Map<String, String> eventTypes = null; // Map<EventId, "t" or "f">
 
     public void updateEventType(String type, String value){
         eventTypes.put(type, value);

@@ -178,9 +178,9 @@ public class DataRetriever {
 
             Log.i(TAG, "createFatherMotherSide(): creating mother side");
             createFamilySide(model.getPeople().get(userPersonId).getMotherId());
-            model.setPersonMotherSide(familySide);
-            model.setPersonMaleMotherSide(familySideMale);
-            model.setPersonFemaleMotherSide(familySideFemale);
+            //model.setPersonMotherSide(familySide);
+            //model.setPersonMaleMotherSide(familySideMale);
+            //model.setPersonFemaleMotherSide(familySideFemale);
             model.setEventMotherSide(eventFamilySide);
             model.setEventFemaleMotherSide(eventFemaleFamilySide);
             model.setEventMaleMotherSide(eventMaleFamilySide);
@@ -196,9 +196,9 @@ public class DataRetriever {
 
             Log.i(TAG, "createFatherMotherSide(): creating father side");
             createFamilySide(model.getPeople().get(userPersonId).getFatherId());
-            model.setPersonFatherSide(familySide);
-            model.setPersonMaleFatherSide(familySideMale);
-            model.setPersonFemaleFatherSide(familySideMale);
+            //model.setPersonFatherSide(familySide);
+            //model.setPersonMaleFatherSide(familySideMale);
+            //model.setPersonFemaleFatherSide(familySideMale);
             model.setEventFatherSide(eventFamilySide);
             model.setEventMaleFatherSide(eventMaleFamilySide);
             model.setEventFemaleFatherSide(eventFemaleFamilySide);

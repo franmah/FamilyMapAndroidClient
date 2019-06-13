@@ -21,10 +21,17 @@
     <string name="basic_upper_text">Click on a maker</string>
     <string name="basic_lower_text">to see event details</string>
 
+    <!-- PersonActivity -->
+    <string name="person_first_name_info">FIRST NAME</string>
+    <string name="person_last_name_info">LAST NAME</string>
+    <string name="person_gender_info">GENDER</string>
+    <string name="life_events_title">LIFE EVENTS</string>
+    <string name="family_title">FAMILY</string>
+
     <!-- FilterActivity -->
-    <string name="event_filter_text">Event</string>
+    <string name="events_filter_text">Events</string>
     <string name="EVENTS_filter_text">EVENTS</string>
-    <string name="filter_by_filter_text">Filter_by</string>
+    <string name="filter_by_filter_text">FILTER BY</string>
 
     <!-- MainActivityMapMenu -->
     <string name="search_title">Search</string>
@@ -57,6 +64,7 @@
         <item>Satellite</item>
         <item>Terrain</item>
     </string-array>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

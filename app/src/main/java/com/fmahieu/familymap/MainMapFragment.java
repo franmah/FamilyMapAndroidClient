@@ -1,8 +1,6 @@
 package com.fmahieu.familymap;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,7 +13,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -43,14 +40,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.SortedSet;
 
-public class MainMapFragment extends Fragment {
+public class MainMapFragment extends Fragment implements View.OnClickListener {
     private final String TAG = "MainMapFragment";
 
     private ImageView mIcon;
     private TextView mPersonName;
     private TextView mEventInfo;
+
+    private String currentEventId;
 
     private GoogleMap map;
 
@@ -133,7 +131,6 @@ public class MainMapFragment extends Fragment {
                 // call the search activity
                 return true;
             case R.id.filter_item:
-                // call filter activity
                 Log.i(TAG, "onOptionsItemSelected(): Starting FilterActivity");
                 intent = new Intent(getActivity(), FilterActivity.class);
                 startActivity(intent);
@@ -164,6 +161,10 @@ public class MainMapFragment extends Fragment {
         mPersonName.setText(R.string.basic_upper_text);
         mEventInfo.setText(R.string.basic_lower_text);
 
+        // Set listener
+        mIcon.setOnClickListener(this);
+        mPersonName.setOnClickListener(this);
+        mEventInfo.setOnClickListener(this);
     }
 
     private void initMap(){
@@ -208,6 +209,7 @@ public class MainMapFragment extends Fragment {
             @Override
             public boolean onMarkerClick(Marker marker) {
                 Event eventClicked = eventMarkers.get(marker);
+                currentEventId = eventClicked.getEventId();
                 LatLng position = new LatLng(eventClicked.getLatitude(), eventClicked.getLongitude());
 
                 centerAndZoomMap(position);
@@ -375,6 +377,16 @@ public class MainMapFragment extends Fragment {
         return null;
     }
 
+    @Override
+    public void onClick(View v) {
+        if(currentEventId != null) {
+            Intent intent = PersonActivity.newIntent(getContext(), allEvents.get(currentEventId).getPersonId());
+
+            Log.i(TAG, "starting person activity");
+            startActivity(intent);
+            // TODO: change it to get a result back
+        }
+    }
 
     @Override
     public void onResume() {

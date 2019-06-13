@@ -72,9 +72,12 @@ public class FilterActivity extends AppCompatActivity {
 
         public void bind(String eventType){
             mEventType = eventType;
-            mEventTypeName.setText(String.format(eventType + R.string.event_filter_text));
-            mEventTypeInfo.setText(String.format(R.string.EVENTS_filter_text +
-                                                    eventType.toUpperCase() + R.string.filter_by_filter_text));
+            String text = eventType + " " + getString(R.string.events_filter_text);
+            mEventTypeName.setText(text);
+
+            text = getString(R.string.filter_by_filter_text) + " " + getString(R.string.EVENTS_filter_text) + " " + eventType.toUpperCase();
+            mEventTypeInfo.setText(String.format(text));
+
             if(mModel.getEventTypes().get(eventType).equals("t")){
                 mEventSwitch.setChecked(true);
             }
