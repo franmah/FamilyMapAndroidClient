@@ -8,6 +8,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -58,12 +60,12 @@ public class PersonActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.i(TAG, "person activity started");
 
-        Log.i(TAG, "activity started");
         setContentView(R.layout.person_activity);
 
         Iconify.with(new FontAwesomeModule());
-        // TODO: add icons
+        // TODO: add icons for Family and Events
 
         retrievePerson();
         initPersonInfoWidgets();
@@ -162,8 +164,9 @@ public class PersonActivity extends AppCompatActivity implements View.OnClickLis
     private class LifeEventsHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private ImageView mEventIcon;
-        private TextView mEventInfo = null;
+        private TextView mEventInfo;
         private TextView mEventPersonName;
+        private String eventId;
 
         public LifeEventsHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.person_event_holder, parent, false));
@@ -176,7 +179,8 @@ public class PersonActivity extends AppCompatActivity implements View.OnClickLis
 
         public void bind(String eventId){
             Log.i(TAG, "LifeEventsHolder.bind(): binding, creating view for event");
-            // TODO: ? store the id to call the event activity?
+
+            this.eventId = eventId;
 
             mEventIcon.setImageDrawable(new IconDrawable(PersonActivity.this,
                     FontAwesomeIcons.fa_map_marker)
@@ -202,10 +206,9 @@ public class PersonActivity extends AppCompatActivity implements View.OnClickLis
 
         @Override
         public void onClick(View v) {
-            String str = String.format("Event: " + mEventInfo.getText().toString() + " clicked");
-            Toast.makeText(PersonActivity.this, str , Toast.LENGTH_SHORT).show();
-
-            //START EVENT ACTIVITY
+            Log.i(TAG, "starting EventActivity with event: " + eventId);
+            Intent intent = EventActivity.newIntent(PersonActivity.this, eventId);
+            startActivity(intent);
         }
     }
 
@@ -226,7 +229,6 @@ public class PersonActivity extends AppCompatActivity implements View.OnClickLis
                     eventIds.add(eventId);
                 }
             }
-
         }
 
         @Override
@@ -255,6 +257,7 @@ public class PersonActivity extends AppCompatActivity implements View.OnClickLis
         private ImageView mPersonIcon;
         private TextView mPersonName;
         private TextView mPersonRelationship;
+        private String familyMemberId;
 
         public FamilyHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.person_family_holder, parent, false));
@@ -272,6 +275,7 @@ public class PersonActivity extends AppCompatActivity implements View.OnClickLis
         public void bind(String personId, String relationship){
             Log.i(TAG, "FamilyHolder.bind(): binding, creating view for family member");
 
+            familyMemberId = personId;
             Person person = allPeople.get(personId);
 
             FontAwesomeIcons iconImage = FontAwesomeIcons.fa_female;
@@ -295,8 +299,8 @@ public class PersonActivity extends AppCompatActivity implements View.OnClickLis
 
         @Override
         public void onClick(View v) {
-            Toast.makeText(PersonActivity.this, "Family member clicked", Toast.LENGTH_SHORT).show();
-            // TODO: call person activity
+            Intent intent = PersonActivity.newIntent(PersonActivity.this, familyMemberId);
+            startActivity(intent);
         }
     }
 

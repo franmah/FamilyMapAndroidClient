@@ -1,14 +1,17 @@
 package com.fmahieu.familymap;
 
-import android.app.Dialog;
-import android.content.Context;
-import android.content.Intent;
+/** TODO: - create event activity
+ *  TODO: - modify mapFragment to accept extras (and to zoom if there is one)
+ *  TODO: - add up button
+ *  TODO: - do search activity
+ */
+
+
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.client.models.Model;
@@ -20,6 +23,7 @@ public class MainActivity extends AppCompatActivity{
     private final int ERROR_DIALOG_REQUEST = 9001;
 
     private FragmentManager fragmentManager = getSupportFragmentManager();
+    private boolean isMapFragmentOn = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,17 +43,22 @@ public class MainActivity extends AppCompatActivity{
         Fragment fragment = fragmentManager.findFragmentById(R.id.main_activity_fragment_container);
         if(fragment == null) {
             if (!Model.getInstance().isUserLoggedIn()) {
-                fragment = new loginFragment();
+                fragment = new LoginFragment();
+                isMapFragmentOn = false;
             } else {
-                fragment = new MainMapFragment();
+                fragment = MainMapFragment.newInstance(null);
+                isMapFragmentOn = true;
             }
             fragmentManager.beginTransaction().add(R.id.main_activity_fragment_container, fragment).commit();
         }
         else{
             if (!Model.getInstance().isUserLoggedIn()) {
-                fragment = new loginFragment();
-            } else {
-                fragment = new MainMapFragment();
+                fragment = new LoginFragment();
+                isMapFragmentOn = false;
+            } else if(!isMapFragmentOn) {
+                Log.i("TESTING", "frag is not null, Creating new map fragment");
+                fragment = MainMapFragment.newInstance(null);
+                isMapFragmentOn = true;
             }
             fragmentManager.beginTransaction().replace(R.id.main_activity_fragment_container, fragment).commit();
         }

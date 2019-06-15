@@ -3,6 +3,9 @@ package com.client.models;
 import android.graphics.Color;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -14,6 +17,16 @@ import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_HYBRID;
 import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_NORMAL;
 import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_SATELLITE;
 import static com.google.android.gms.maps.GoogleMap.MAP_TYPE_TERRAIN;
+import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_AZURE;
+import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_BLUE;
+import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_CYAN;
+import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_GREEN;
+import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_MAGENTA;
+import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_ORANGE;
+import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_RED;
+import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_ROSE;
+import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_VIOLET;
+import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_YELLOW;
 
 
 public class Model {
@@ -66,11 +79,31 @@ public class Model {
     private Set<String> personMaleFatherSide = null;
     private Set<String> personFemaleFatherSide = null;
 
-    /** Get the events of a person's life, events are taken from the set currently used (defined by filters)
-     */
-    public List<String> getPersonEvents(String personId){
-        Set<String> currentEvents = getEvents().keySet();
+    /** COLORS FOR MAKERS **/
+    private Map<String, String> eventTypeColors = null;
 
+    public void setEventTypeColors() {
+        eventTypeColors = new HashMap<>();
+
+        float[] colors = { HUE_BLUE, HUE_AZURE, HUE_CYAN, HUE_GREEN, HUE_MAGENTA, HUE_ORANGE, HUE_RED, HUE_ROSE, HUE_VIOLET, HUE_YELLOW };
+        int colorPosition = 0;
+        int sizeColorArray = colors.length - 1;
+
+        for(String type : getEventTypes().keySet()){
+            eventTypeColors.put(type, String.valueOf(colors[colorPosition]));
+            colorPosition = colorPosition + 1 ;
+            if(colorPosition > sizeColorArray){
+                colorPosition = 0;
+            }
+        }
+    }
+
+    public Map<String, String> getEventTypeColors() {return eventTypeColors; }
+
+    /** Get the events of a person's life, events are taken from the set currently used (defined by filters) */
+    public List<String> getPersonEvents(String personId){
+        //Set<String> currentEvents = getEvents().keySet();
+        Set<String> currentEvents = getCurrentEvents();
         List<String> result = new ArrayList<>();
         for(String eventId : currentEvents){
             if(events.get(eventId).getPersonId().equals(personId)){
@@ -195,7 +228,7 @@ public class Model {
         }
     }
 
-    /** SETTINGS  LINES**/
+    /** SETTINGS - LINES**/
     private final int BLUE = 0, RED = 1, GREEN = 2; // Numbers come from the string-array color in "strings.xml"
     private int lifeStoryColor = BLUE;
     private int familyTreeColor = RED;
@@ -245,7 +278,7 @@ public class Model {
     public boolean isSpouseLineOn() { return isSpouseLineOn; }
     public void setSpouseLineOn(boolean spouseLineOn) { isSpouseLineOn = spouseLineOn; }
 
-    /** SETTINGS MAP TYPE **/
+    /** SETTINGS - MAP TYPE **/
     private int[] mapTypes = {MAP_TYPE_NORMAL, MAP_TYPE_HYBRID, MAP_TYPE_SATELLITE, MAP_TYPE_TERRAIN};
     // the order comes from the items listed in "string.xml" map_type_array
     private int mapType = 0;
@@ -254,15 +287,13 @@ public class Model {
     public int getMapTypeId(){ return mapTypes[getMapTypePos()]; }
     public void setMapTypePos(int position){ mapType = position; }
 
-    /** SETTING RE-SYNC & LOGOUT **/
+    /** SETTING - RE-SYNC & LOGOUT **/
     private boolean isUserLoggedIn = false;
 
     public boolean isUserLoggedIn() { return isUserLoggedIn; }
     public void setUserLoggedIn(boolean userLoggedIn) { isUserLoggedIn = userLoggedIn; }
 
-    /** Clear family data and reset settings & filters
-     *
-     */
+    /** Clear family data and reset settings & filters **/
     public void resetModelToDefault(){
         // set the instance to a new one, the previous data is not accessible
         instance = new Model();
@@ -465,5 +496,6 @@ public class Model {
     public void setPortNumber(String portNumber) {
         this.portNumber = portNumber;
     }
+
 }
 

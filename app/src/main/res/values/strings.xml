@@ -33,6 +33,9 @@
     <string name="EVENTS_filter_text">EVENTS</string>
     <string name="filter_by_filter_text">FILTER BY</string>
 
+    <!-- SearchActivity -->
+    <string name="search_hint">Search for name, location...</string>
+
     <!-- MainActivityMapMenu -->
     <string name="search_title">Search</string>
     <string name="filter_title">Filter</string>

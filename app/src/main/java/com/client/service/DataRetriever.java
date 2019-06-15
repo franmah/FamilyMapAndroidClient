@@ -8,6 +8,7 @@ import com.client.models.*;
 import com.client.response.EventAllResponse;
 import com.client.response.PersonAllResponse;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -21,10 +22,11 @@ public class DataRetriever {
     private ServerProxy proxy = null;
     private Model model = null;
 
+    /*
     private Set<String> familySide = new HashSet<>();
     private Set<String> familySideMale = new HashSet<>();
     private Set<String> familySideFemale = new HashSet<>();
-
+*/
     private Set<String> eventFamilySide = new HashSet<>();
     private Set<String> eventFemaleFamilySide = new HashSet<>();
     private Set<String> eventMaleFamilySide = new HashSet<>();
@@ -85,22 +87,18 @@ public class DataRetriever {
         }
 
         System.out.println("DataRetriever.getEvents(): events response came back with array of events");
+
         Map<String, Event> result = new TreeMap<>();
         Map<String, String> eventTypes = new HashMap<>();
         Set<String> maleEvents = new HashSet<>();
         Set<String> femaleEvents = new HashSet<>();
         Set<String> userEvents = new HashSet<>();
 
+        int color = android.R.color.holo_blue_light; // First color in the android.R.color
+
         for(Event event : response.getEvents()){
             assert event.getEventType().length() > 0;
 
-            // Set type to lowerCase and the first letter to upperCase
-            String type = event.getEventType().toLowerCase();
-            String typeEntry = type.substring(0,1).toUpperCase() + type.substring(1);
-
-            if(!eventTypes.containsKey(typeEntry)) {
-                eventTypes.put(typeEntry, "t");
-            }
 
             if(model.getPeople().get(event.getPersonId()).getGender().equals("m")){
                 maleEvents.add(event.getEventId());
@@ -109,13 +107,23 @@ public class DataRetriever {
                 femaleEvents.add(event.getEventId());
             }
 
-            if(event.getPersonId() == userPersonId){
+            if(event.getPersonId().equals(userPersonId)){
                 userEvents.add(event.getEventId());
             }
 
+            // Event type:
+            String type = event.getEventType().toLowerCase();
+            String typeEntry = type.substring(0,1).toUpperCase() + type.substring(1);
+
+            if(!eventTypes.containsKey(typeEntry)) {
+                eventTypes.put(typeEntry, "t");
+            }
             event.setEventType(typeEntry); // Update the event type. (avoid lower/upper cases differences)
             result.put(event.getEventId(), event);
         }
+
+        model.setEventTypes(eventTypes);
+        model.setEventTypeColors();
 
         // Add Gender/Side events
         eventTypes.put("Father's Side", "t");
@@ -127,6 +135,7 @@ public class DataRetriever {
         model.setEventTypes(eventTypes);
         model.setMaleEvents(maleEvents);
         model.setFemaleEvents(femaleEvents);
+        model.setUserEvents(userEvents);
 
         return null;
     }
@@ -169,36 +178,23 @@ public class DataRetriever {
             }
 
             // Set mother side of the family.
-            familySide.clear();
-            familySideFemale.clear();
-            familySideMale.clear();
             eventFamilySide.clear();
             eventMaleFamilySide.clear();
             eventFemaleFamilySide.clear();
 
             Log.i(TAG, "createFatherMotherSide(): creating mother side");
             createFamilySide(model.getPeople().get(userPersonId).getMotherId());
-            //model.setPersonMotherSide(familySide);
-            //model.setPersonMaleMotherSide(familySideMale);
-            //model.setPersonFemaleMotherSide(familySideFemale);
             model.setEventMotherSide(eventFamilySide);
             model.setEventFemaleMotherSide(eventFemaleFamilySide);
             model.setEventMaleMotherSide(eventMaleFamilySide);
 
             // Set father side of the family.
-
-            familySide.clear();
-            familySideFemale.clear();
-            familySideMale.clear();
             eventFamilySide.clear();
             eventMaleFamilySide.clear();
             eventFemaleFamilySide.clear();
 
             Log.i(TAG, "createFatherMotherSide(): creating father side");
             createFamilySide(model.getPeople().get(userPersonId).getFatherId());
-            //model.setPersonFatherSide(familySide);
-            //model.setPersonMaleFatherSide(familySideMale);
-            //model.setPersonFemaleFatherSide(familySideMale);
             model.setEventFatherSide(eventFamilySide);
             model.setEventMaleFatherSide(eventMaleFamilySide);
             model.setEventFemaleFatherSide(eventFemaleFamilySide);
@@ -219,25 +215,17 @@ public class DataRetriever {
             isMale = false;
         }
 
-        familySide.add(personID);
-
-        // Add to male/female side of family
-        if(isMale){
-            familySideMale.add(personID);
-        }
-        else{
-            familySideFemale.add(personID);
-        }
-
         // Add events to family side + Male/Female family side
-        List<String> eventIds = model.getPersonEvents(personID);
+        //List<String> eventIds = model.getPersonEvents(personID);
+        List<String> eventIds = new ArrayList<String>(model.getEvents().keySet());
         for(String eventId : eventIds){
-            eventFamilySide.add(eventId);
-            if(isMale){
-                eventMaleFamilySide.add(eventId);
-            }
-            else{
-                eventFemaleFamilySide.add(eventId);
+            if(model.getEvents().get(eventId).getPersonId().equals(personID)) {
+                eventFamilySide.add(eventId);
+                if (isMale) {
+                    eventMaleFamilySide.add(eventId);
+                } else {
+                    eventFemaleFamilySide.add(eventId);
+                }
             }
         }
 
