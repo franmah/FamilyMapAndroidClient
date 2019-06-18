@@ -16,19 +16,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SearchActivity" android:parentActivityName=".MainActivity"></activity>
+        <activity android:name=".ui.SearchActivity" android:parentActivityName=".ui.MainActivity"></activity>
         <activity
-            android:name=".EventActivity"
-            android:parentActivityName=".MainActivity" />
+            android:name=".ui.EventActivity"
+            android:parentActivityName=".ui.MainActivity" />
         <activity
-            android:name=".FilterActivity"
-            android:parentActivityName=".MainActivity" />
+            android:name=".ui.FilterActivity"
+            android:parentActivityName=".ui.MainActivity" />
         <activity
-            android:name=".SettingActivity"
-            android:parentActivityName=".MainActivity" />
+            android:name=".ui.SettingActivity"
+            android:parentActivityName=".ui.MainActivity" />
         <activity
-            android:name=".PersonActivity"
-            android:parentActivityName=".MainActivity" />
+            android:name=".ui.PersonActivity"
+            android:parentActivityName=".ui.MainActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -41,7 +41,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".MainActivity" android:launchMode="singleTop">
+        <activity android:name=".ui.MainActivity" android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.MAIN" />
